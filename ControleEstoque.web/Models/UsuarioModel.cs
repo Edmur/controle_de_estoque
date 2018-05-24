@@ -105,9 +105,14 @@ namespace ControleEstoque.web.Models
                     }
                     else
                     {
-                        comando.CommandText = "update tb_usuario set senha=@senha, usuario=@login, nome=@nome, email=@email, status=@ativo where id_usuario = @id";
+                        comando.CommandText = "update tb_usuario set "+
+                            (!string.IsNullOrEmpty(this.Senha) ? " senha=@senha, " : "")+
+                            "usuario=@login, nome=@nome, email=@email, status=@ativo where id_usuario = @id";
                         comando.Parameters.Add("@id", MySqlDbType.Int32).Value = this.Id;
-                        comando.Parameters.Add("@senha", MySqlDbType.VarChar).Value = CriptoHelper.HashMD5(Senha);
+                        if (!string.IsNullOrEmpty(this.Senha))
+                        {
+                            comando.Parameters.Add("@senha", MySqlDbType.VarChar).Value = CriptoHelper.HashMD5(Senha);
+                        }
                         comando.Parameters.Add("@login", MySqlDbType.VarChar).Value = this.Login;
                         comando.Parameters.Add("@nome", MySqlDbType.VarChar).Value = this.Nome;
                         comando.Parameters.Add("@email", MySqlDbType.VarChar).Value = this.Email;
