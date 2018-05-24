@@ -10,13 +10,68 @@ namespace ControleEstoque.web.Controllers
     public class CadastroController : Controller
     {
 
-        private static List<CategoriaProdutoModel> _listaCategoriaProduto = new List<CategoriaProdutoModel>()
+        #region Usuários
+
+        [Authorize]
+        public ActionResult Usuario()
         {
-            new CategoriaProdutoModel() { Id=1, Descricao="Livros", Ativo=true },
-            new CategoriaProdutoModel() { Id=2, Descricao="Mouses", Ativo=true },
-            new CategoriaProdutoModel() { Id=3, Descricao="Monitores", Ativo=false },
-            new CategoriaProdutoModel() { Id=4, Descricao="Computadores", Ativo=true }
-        };
+            return View(UsuarioModel.RecuperarLista());
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult RecuperarUsuario(int id)
+        {
+            return Json(UsuarioModel.RecuperarPorId(id));
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult SalvarUsuario(UsuarioModel model)
+        {
+            var resultado = "OK";
+            var mensagens = new List<string>();
+            var idSalvo = string.Empty;
+
+            if (!ModelState.IsValid)
+            {
+                resultado = "AVISO";
+                mensagens = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+            }
+            else
+            {
+                try
+                {
+                    var id = model.SalvarUsuario();
+                    if (id > 0)
+                    {
+                        idSalvo = id.ToString();
+                    }
+                    else
+                    {
+                        resultado = "ERRO";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    resultado = "ERRO";
+                }
+
+            }
+
+            return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult ExcluirUsuario(int id)
+        {
+            return Json(UsuarioModel.ExcluirPorId(id));
+        }
+
+        #endregion
+        
+        #region Categorias de Produtos
 
         [Authorize]
         public ActionResult CategoriaProduto()
@@ -75,17 +130,29 @@ namespace ControleEstoque.web.Controllers
             return Json(CategoriaProdutoModel.ExcluirPorId(id));
         }
 
+        #endregion
+
+        #region Marcas de Produtos
+
         [Authorize]
         public ActionResult MarcaProduto()
         {
             return View();
         }
 
+        #endregion
+
+        #region Locais de Produtos
+
         [Authorize]
         public ActionResult LocalProduto()
         {
             return View();
         }
+
+        #endregion
+
+        #region Unidades de Medidas
 
         [Authorize]
         public ActionResult UnidadeMedida()
@@ -144,11 +211,70 @@ namespace ControleEstoque.web.Controllers
             return Json(UnidadeMedidaModel.ExcluirPorId(id));
         }
 
+        #endregion
+
+        #region Produtos
+
         [Authorize]
         public ActionResult Produto()
         {
-            return View();
+            return View(ProdutoModel.RecuperarLista());
         }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult RecuperarProduto(int id)
+        {
+            return Json(ProdutoModel.RecuperarPorId(id));
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult SalvarProduto(ProdutoModel model)
+        {
+            var resultado = "OK";
+            var mensagens = new List<string>();
+            var idSalvo = string.Empty;
+
+            if (!ModelState.IsValid)
+            {
+                resultado = "AVISO";
+                mensagens = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+            }
+            else
+            {
+                try
+                {
+                    var id = model.SalvarProduto();
+                    if (id > 0)
+                    {
+                        idSalvo = id.ToString();
+                    }
+                    else
+                    {
+                        resultado = "ERRO";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    resultado = "ERRO";
+                }
+
+            }
+
+            return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult ExcluirProduto(int id)
+        {
+            return Json(ProdutoModel.ExcluirPorId(id));
+        }
+
+        #endregion
+
+        #region Paises
 
         [Authorize]
         public ActionResult Pais()
@@ -156,11 +282,19 @@ namespace ControleEstoque.web.Controllers
             return View();
         }
 
+        #endregion
+
+        #region Estados
+
         [Authorize]
         public ActionResult Estado()
         {
             return View();
         }
+
+        #endregion
+
+        #region Cidades
 
         [Authorize]
         public ActionResult Cidade()
@@ -168,11 +302,19 @@ namespace ControleEstoque.web.Controllers
             return View();
         }
 
+        #endregion
+
+        #region Fornecedores
+
         [Authorize]
         public ActionResult Fornecedor()
         {
             return View();
         }
+
+        #endregion
+
+        #region Perfis de Usuarios
 
         [Authorize]
         public ActionResult PerfilUsuario()
@@ -180,10 +322,7 @@ namespace ControleEstoque.web.Controllers
             return View();
         }
 
-        [Authorize]
-        public ActionResult Usuario()
-        {
-            return View();
-        }
+        #endregion
+
     }
 }
