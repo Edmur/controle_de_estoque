@@ -233,10 +233,10 @@
             var url = '@Url.Action("SalvarUsuario", "Cadastro")';
             var param = {
                 Id: $('#id_cadastro').val(),
-                Descricao: $('#txt_login').val(),
-                Descricao: $('#txt_senha').val(),
-                Descricao: $('#txt_nome').val(),
-                Descricao: $('#txt_email').val(),
+                Login: $('#txt_login').val(),
+                Senha: $('#txt_senha').val(),
+                Nome: $('#txt_nome').val(),
+                Email: $('#txt_email').val(),
                 Ativo: $('#cbx_ativo').prop('checked')
             };
 
@@ -251,8 +251,10 @@
                     else {
                         var linha = $('#grid_cadastro').find('tr[data-id=' + param.Id + ']').find('td');
                         linha
-                            .eq(0).html(param.Descricao).end()
-                            .eq(1).html(param.Ativo ? 'Sim' : 'Não');
+                            .eq(0).html(param.Login).end()
+                            .eq(1).html(param.Nome).end()
+                            .eq(2).html(param.Email).end()
+                            .eq(3).html(param.Ativo ? 'Sim' : 'Não');
                     }
 
                     $('#modal_cadastro').parents('.bootbox').modal('hide');

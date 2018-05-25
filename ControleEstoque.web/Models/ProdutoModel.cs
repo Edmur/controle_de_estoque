@@ -25,6 +25,8 @@ namespace ControleEstoque.web.Models
         public decimal PrecoVenda { get; set; }
         [Required(ErrorMessage = "Unidade de medida deve ser informada.")]
         public int Id_UnidadeMedida { get; set; }
+        [Required(ErrorMessage = "Qtde da embalagem deve ser informada.")]
+        public int Qt_UnidadeMedida { get; set; }
         public bool Ativo { get; set; }
 
         public static List<ProdutoModel> RecuperarLista()
@@ -45,13 +47,14 @@ namespace ControleEstoque.web.Models
                         ret.Add(new ProdutoModel
                         {
                             Id = Convert.ToInt32(dtreader["id_produto"]),
-                            Id_Categoria = Convert.ToInt32(dtreader["id_produto"]),
-                            Id_Fornecedor = Convert.ToInt32(dtreader["id_produto"]),
+                            Id_Categoria = Convert.ToInt32(dtreader["id_categoria"]),
+                            Id_Fornecedor = Convert.ToInt32(dtreader["id_fornecedor"]),
                             Ean = Convert.ToString(dtreader["ean"]),
                             Descricao = Convert.ToString(dtreader["descricao"]),
                             PrecoCusto = Convert.ToDecimal(dtreader["preco_custo"]),
                             PrecoVenda = Convert.ToDecimal(dtreader["preco_venda"]),
                             Id_UnidadeMedida = Convert.ToInt32(dtreader["id_unidade_medida"]),
+                            Qt_UnidadeMedida = Convert.ToInt32(dtreader["qt_unidade"]),
                             Ativo = Convert.ToBoolean(dtreader["status"])
                         });
                     }
@@ -80,13 +83,14 @@ namespace ControleEstoque.web.Models
                         ret = new ProdutoModel
                         {
                             Id = Convert.ToInt32(dtreader["id_produto"]),
-                            Id_Categoria = Convert.ToInt32(dtreader["id_produto"]),
-                            Id_Fornecedor = Convert.ToInt32(dtreader["id_produto"]),
+                            Id_Categoria = Convert.ToInt32(dtreader["id_categoria"]),
+                            Id_Fornecedor = Convert.ToInt32(dtreader["id_fornecedor"]),
                             Ean = Convert.ToString(dtreader["ean"]),
                             Descricao = Convert.ToString(dtreader["descricao"]),
                             PrecoCusto = Convert.ToDecimal(dtreader["preco_custo"]),
                             PrecoVenda = Convert.ToDecimal(dtreader["preco_venda"]),
                             Id_UnidadeMedida = Convert.ToInt32(dtreader["id_unidade_medida"]),
+                            Qt_UnidadeMedida = Convert.ToInt32(dtreader["qt_unidade"]),
                             Ativo = Convert.ToBoolean(dtreader["status"])
                         };
                     }
@@ -132,7 +136,7 @@ namespace ControleEstoque.web.Models
                     comando.Connection = conexao;
                     if (model == null)
                     {
-                        comando.CommandText = "insert into tb_produto (id_categoria, id_fornecedor, ean, descricao, preco_custo, preco_venda, id_unidade_medida, status) values (@id_categoria, @id_fornecedor, @ean, @descricao, @preco_custo, @preco_venda, @ativo); select max(id_produto) as id_produto from tb_produto";
+                        comando.CommandText = "insert into tb_produto (id_categoria, id_fornecedor, ean, descricao, preco_custo, preco_venda, id_unidade_medida, qt_unidade, status) values (@id_categoria, @id_fornecedor, @ean, @descricao, @preco_custo, @preco_venda, @id_unidade_medida, @qt_unidade, @ativo); select max(id_produto) as id_produto from tb_produto;";
                         comando.Parameters.Add("@id_categoria", MySqlDbType.VarChar).Value = this.Id_Categoria;
                         comando.Parameters.Add("@id_fornecedor", MySqlDbType.VarChar).Value = this.Id_Fornecedor;
                         comando.Parameters.Add("@ean", MySqlDbType.VarChar).Value = this.Ean;
@@ -140,12 +144,13 @@ namespace ControleEstoque.web.Models
                         comando.Parameters.Add("@preco_custo", MySqlDbType.VarChar).Value = this.PrecoCusto;
                         comando.Parameters.Add("@preco_venda", MySqlDbType.VarChar).Value = this.PrecoVenda;
                         comando.Parameters.Add("@id_unidade_medida", MySqlDbType.VarChar).Value = this.Id_UnidadeMedida;
+                        comando.Parameters.Add("@qt_unidade", MySqlDbType.VarChar).Value = this.Qt_UnidadeMedida;
                         comando.Parameters.Add("@ativo", MySqlDbType.Bit).Value = this.Ativo ? 1 : 0;
                         ret = Convert.ToInt32(comando.ExecuteScalar());
                     }
                     else
                     {
-                        comando.CommandText = "update tb_produto set id_categoria=@id_categoria, id_fornecedor=@id_fornecedor, ean=@ean, descricao=@descricao, preco_custo=@preco_custo, preco_venda=@preco_venda, id_unidade_medida=@id_unidade_medida, status=@ativo where id_produto = @id";
+                        comando.CommandText = "update tb_produto set id_categoria=@id_categoria, id_fornecedor=@id_fornecedor, ean=@ean, descricao=@descricao, preco_custo=@preco_custo, preco_venda=@preco_venda, id_unidade_medida=@id_unidade_medida, qt_unidade=@qt_unidade, status=@ativo where id_produto = @id";
                         comando.Parameters.Add("@id", MySqlDbType.VarChar).Value = this.Id;
                         comando.Parameters.Add("@id_categoria", MySqlDbType.VarChar).Value = this.Id_Categoria;
                         comando.Parameters.Add("@id_fornecedor", MySqlDbType.VarChar).Value = this.Id_Fornecedor;
@@ -154,6 +159,7 @@ namespace ControleEstoque.web.Models
                         comando.Parameters.Add("@preco_custo", MySqlDbType.VarChar).Value = this.PrecoCusto;
                         comando.Parameters.Add("@preco_venda", MySqlDbType.VarChar).Value = this.PrecoVenda;
                         comando.Parameters.Add("@id_unidade_medida", MySqlDbType.VarChar).Value = this.Id_UnidadeMedida;
+                        comando.Parameters.Add("@qt_unidade", MySqlDbType.VarChar).Value = this.Qt_UnidadeMedida;
                         comando.Parameters.Add("@ativo", MySqlDbType.Bit).Value = this.Ativo ? 1 : 0;
                         if (comando.ExecuteNonQuery() > 0)
                         {

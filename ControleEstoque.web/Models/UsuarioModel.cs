@@ -6,14 +6,18 @@ using MySql.Data.MySqlClient;
 using System.Data;
 using System.Configuration;
 using ControleEstoque.web.Helpers;
+using System.ComponentModel.DataAnnotations;
 
 namespace ControleEstoque.web.Models
 {
     public class UsuarioModel
     {
         public int Id { get; set; }
+        [Required(ErrorMessage = "Login deve ser informado.")]
         public string Login { get; set; }
+        [Required(ErrorMessage = "Senha deve ser informada.")]
         public string Senha { get; set; }
+        [Required(ErrorMessage = "Nome deve ser informado.")]
         public string Nome { get; set; }
         public string Email { get; set; }
         public bool Ativo { get; set; }
@@ -96,7 +100,7 @@ namespace ControleEstoque.web.Models
                     if (model == null)
                     {
                         comando.CommandText = "insert into tb_usuario (senha, usuario, nome, email, status) values (@senha, @login, @nome, @email, @ativo); select max(id_usuario) as id_usuario from tb_usuario ";
-                        comando.Parameters.Add("@senha", MySqlDbType.VarChar).Value = this.Senha;
+                        comando.Parameters.Add("@senha", MySqlDbType.VarChar).Value = CriptoHelper.HashMD5(Senha);
                         comando.Parameters.Add("@login", MySqlDbType.VarChar).Value = this.Login;
                         comando.Parameters.Add("@nome", MySqlDbType.VarChar).Value = this.Nome;
                         comando.Parameters.Add("@email", MySqlDbType.VarChar).Value = this.Email;
