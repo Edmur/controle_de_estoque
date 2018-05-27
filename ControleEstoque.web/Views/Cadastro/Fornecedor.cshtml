@@ -1,1 +1,409 @@
-﻿<h2>Fornecedor</h2>
+﻿@model List<ControleEstoque.web.Models.FornecedorModel>
+@{
+    ViewBag.Title = "Cadastro de Fornecedores";
+}
+<style>
+    #grid_cadastro > thead > tr th:nth-child(1) {
+        width: 500px;
+    }
+
+    #grid_cadastro > thead > tr th:nth-child(2) {
+        width: 150px;
+    }
+
+    #grid_cadastro > thead > tr th:nth-child(3) {
+        width: 120px;
+    }
+
+    #grid_cadastro > thead > tr th:nth-child(4) {
+        width: 210px;
+    }
+
+    #grid_cadastro > thead > tr th:nth-child(5) {
+        width: 70px;
+    }
+
+    #cadastro {
+        width: 93%;
+        margin: 0 auto;
+    }
+
+    #cadastro_cabecalho {
+        border-bottom: 1px #dddddd solid;
+    }
+
+    #cadastro_conteudo {
+        margin-top: 20px;
+    }
+
+    #cabecalho_grid {
+        margin-bottom: 20px;
+    }
+</style>
+
+<div id="cadastro">
+    <section id="cadastro_cabecalho">
+        <h1 class="cabecalho-center">@ViewBag.Title</h1>
+    </section>
+    <section id="cadastro_conteudo">
+        <div id="cabecalho_grid" class="row">
+            <div class="col-md-12">
+                <a id="btn_incluir" class="btn btn-success pull-right" role="button"><i class="glyphicon glyphicon-plus"></i>Incluir</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table id="grid_cadastro" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="cabecalho-center">Nome</th>
+                            <th class="cabecalho-center">Cpf / Cnpj</th>
+                            <th class="cabecalho-center">Celular 1</th>
+                            <th class="cabecalho-center">Email</th>
+                            <th class="cabecalho-center">Ativo</th>
+                            <th class="cabecalho-center">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var linha = 0;
+                            foreach (var item in Model)
+                            {
+                                linha++;
+                                if (ViewBag.QuantMaxLinhaPorPagina <= 10)
+                                {
+                                    <tr data-id="@item.Id">
+                                        <td class="detalhe-left">@item.Nome</td>
+                                        <td class="detalhe-center">@item.CpfCnpj</td>
+                                        <td class="detalhe-left">@item.TelefoneCelular1</td>
+                                        <td class="detalhe-left">@item.Email</td>
+                                        <td class="detalhe-center">@{var ativo = (item.Ativo ? "Sim" : "Não");}@ativo</td>
+                                        <td>
+                                            <a class="btn-pequeno btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                                            <a class="btn-pequeno btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @if (ViewBag.QuantPaginas > 1)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            @for (int i = 2; i <= ViewBag.QuantPaginas; i++)
+                            {
+                                <li class="page-item"><a class="page-link" href="#">@i</a></li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        }
+    </section>
+</div>
+@Html.Hidden("id_cadastro")
+<div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
+    <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
+    <fieldset>
+        <div class="row">
+            <div class="form-group">
+                @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.TextBox("txt_nome", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("txt_cpf_cnpj", "Cpf / Cnpj", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.TextBox("txt_cpf_cnpj", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("txt_tel_fixo", "Telefone", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.TextBox("txt_tel_fixo", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("txt_tel_celular_1", "Celular 1", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.TextBox("txt_tel_celular_1", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("txt_tel_celular_2", "Celular 2", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.TextBox("txt_tel_celular_1", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("txt_email", "E-mail", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.TextBox("txt_email", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("txt_endereco", "Logradouro", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.TextBox("txt_endereco", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("txt_numero", "Número", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.TextBox("txt_numero", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("txt_complemento", "Complemento", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.TextBox("txt_complemento", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("txt_bairro", "Bairro", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.TextBox("txt_bairro", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("txt_cep", "Cep", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.TextBox("txt_cep", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("txt_cidade", "Cidade", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.TextBox("txt_cidade", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("txt_uf", "UF", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.TextBox("txt_uf", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.CheckBox("cbx_ativo")
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="modal-footer">
+                        <a id="btn_sair" class="btn btn-default" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> Sair</a>
+                        <a id="btn_confirmar" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-ok"></i> Salvar</a>
+                    </div>
+                    <div id="msg_aviso" class="alert alert-warning invisivel">Falta preencher os campos acima.</div>
+                    <div id="msg_erro" class="alert alert-danger invisivel">Ops! Ocorreu um erro.</div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
+@section Scripts{
+    <script>
+        function abrir_form(dados) {
+            $('#id_cadastro').val(dados.Id);
+            $('#txt_nome').val(dados.Nome);
+            $('#txt_cpf_cnpj').val(dados.CpfCnpj);
+            $('#txt_tel_fixo').val(dados.TelefoneFixo);
+            $('#txt_tel_celular_1').val(dados.TelefoneCelular1);
+            $('#txt_tel_celular_2').val(dados.TelefoneCelular2);
+            $('#txt_email').val(dados.Email);
+            $('#txt_endereco').val(dados.Endereco);
+            $('#txt_numero').val(dados.Numero);
+            $('#txt_complemento').val(dados.Complemento);
+            $('#txt_bairro').val(dados.Bairro);
+            $('#txt_cep').val(dados.Cep);
+            $('#txt_cidade').val(dados.Cidade);
+            $('#txt_uf').val(dados.UF);
+            $('#cbx_ativo').prop('checked', dados.Ativo);
+
+            var modal_cadastro = $('#modal_cadastro');
+
+            $('#msg_mensagem_aviso').empty();
+            $('#msg_aviso').hide();
+            $('#msg_mensagem_aviso').hide();
+            $('#msg_erro').hide();
+
+            bootbox.dialog({
+                title: '@ViewBag.Title',
+                message: modal_cadastro
+            })
+            .on('shown.bs.modal', function () {
+                modal_cadastro.show(0, function () {
+                    $('#txt_nome').focus();
+                });
+            })
+            .on('hidden.bs.modal', function () {
+                modal_cadastro.hide().appendTo('body');
+            });
+        }
+
+        function criar_linha_grid(dados) {
+            var ret =
+                '<tr data-id=' + dados.Id + '>' +
+                '<td class="detalhe-left">' + dados.Nome + '</td>' +
+                '<td class="detalhe-center">' + dados.CpfCnpj + '</td>' +
+                '<td class="detalhe-left">' + dados.TelefoneCelular1 + '</td>' +
+                '<td class="detalhe-left">' + dados.Email + '</td>' +
+                '<td class="detalhe-center">' + (dados.Ativo ? 'Sim' : 'Não') + '</td>' +
+                '<td>' +
+                '<a class="btn-pequeno btn-primary btn-alterar" role="button" style="margin-right: 3px"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>' +
+                '<a class="btn-pequeno btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>' +
+                '</td>' +
+                '</tr>';
+
+            return ret;
+        }
+
+        $(document).on('click', '#btn_incluir', function () {
+            abrir_form({ Id: 0, Nome: '', CpfCnpj: '', TelefoneFixo: '', TelefoneCelular1: '', TelefoneCelular2: '', Email: '', Endereco: '', Numero: 0, Complemento: '', Bairro: '', Cep: '', Cidade: '', UF: '', Ativo: true });
+        })
+        .on('click', '.btn-alterar', function () {
+            var btn = $(this);
+            var id = btn.closest('tr').attr('data-id');
+            var url = '@Url.Action("RecuperarFornecedor", "Cadastro")';
+            var param = { 'id': id };
+
+            $.post(url, param, function (response) {
+                if (response) {
+                    abrir_form(response);
+                }
+            });
+
+        })
+        .on('click', '.btn-excluir', function () {
+            var btn = $(this);
+            var tr = btn.closest('tr');
+            var id = tr.attr('data-id');
+            var url = '@Url.Action("ExcluirFornecedor", "Cadastro")';
+            var param = { 'id': id };
+
+            bootbox.confirm({
+                message: "Confirma a exclusão do Fornecedor?",
+                buttons: {
+                    confirm: {
+                        label: 'Sim',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'Não',
+                        className: 'btn-success'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+
+                        $.post(url, param, function (response) {
+                            if (response) {
+                                tr.remove();
+                            }
+                        });
+                    }
+                }
+            });
+        })
+        .on('click', '#btn_confirmar', function () {
+            var btn = $(this);
+            var tr = btn.closest('tr');
+            var url = '@Url.Action("SalvarFornecedor", "Cadastro")';
+            var param = {
+                Id: $('#id_cadastro').val(),
+                Nome: $('#txt_nome').val(),
+                CpfCnpj: $('#txt_cpf_cnpj').val(),
+                TelefoneFixo: $('#txt_tel_fixo').val(),
+                TelefoneCelular1: $('#txt_tel_celular_1').val(),
+                TelefoneCelular2: $('#txt_tel_celular_2').val(),
+                Email: $('#txt_email').val(),
+                Endereco: $('#txt_endereco').val(),
+                Numero: $('#txt_numero').val(),
+                Complemento: $('#txt_complemento').val(),
+                Bairro: $('#txt_bairro').val(),
+                Cep: $('#txt_cep').val(),
+                Cidade: $('#txt_cidade').val(),
+                UF: $('#txt_uf').val(),
+                Ativo: $('#cbx_ativo').prop('checked')
+            };
+
+            $.post(url, param, function (response) {
+                if (response.Resultado == "OK") {
+                    if (param.Id == 0) {
+                        param.Id = response.IdSalvo;
+                        var table = $('#grid_cadastro').find('tbody');
+                        var linha = criar_linha_grid(param);
+                        table.append(linha);
+                    }
+                    else {
+                        var linha = $('#grid_cadastro').find('tr[data-id=' + param.Id + ']').find('td');
+                        linha
+                            .eq(0).html(param.Nome).end()
+                            .eq(1).html(param.Cpf_Cnpj).end()
+                            .eq(2).html(param.TelefoneCelular1).end()
+                            .eq(3).html(param.Email).end()
+                            .eq(4).html(param.Ativo ? 'Sim' : 'Não');
+                    }
+
+                    $('#modal_cadastro').parents('.bootbox').modal('hide');
+                }
+                else if (response.Resultado == "ERRO") {
+                    $('#msg_aviso').hide();
+                    $('#msg_mensagem_aviso').hide();
+                    $('#msg_erro').show();
+                }
+                else if (response.Resultado == "AVISO") {
+                    $('#msg_mensagem_aviso').html(formatar_mensagem_aviso(response.Mensagens));
+                    $('#msg_aviso').show();
+                    $('#msg_mensagem_aviso').show();
+                    $('#msg_erro').hide();
+                }
+            });
+        })
+        .on('click', '.page-item', function () {
+            var btn = $(this),
+                pagina = btn.text(),
+                url = '@Url.Action("FornecedorPagina", "Cadastro")';
+
+            $.post(url, { pagina }, function (response) {
+                if (response) {
+                    var table = $('#grid_cadastro').find('tbody');
+
+                    table.empty();
+                    for (var i = 0; i < response.length; i++) {
+                        table.append(criar_linha_grid(response[i]));
+                    }
+
+                    btn.siblings().removeClass('active');
+                    btn.addClass('active');
+                }
+            });
+        });
+
+        function formatar_mensagem_aviso(mensagens) {
+            var ret = '';
+
+            for (var i = 0; i < mensagens.length; i++) {
+                ret += '<li>' + mensagens[i] + '</li>';
+            }
+
+            return '<ul>' + ret + '</ul>';
+        }
+
+    </script>
+}

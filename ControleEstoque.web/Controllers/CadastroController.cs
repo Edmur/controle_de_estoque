@@ -9,6 +9,7 @@ namespace ControleEstoque.web.Controllers
 {
     public class CadastroController : Controller
     {
+        private const int _quantMaxLinhaPorPagina = 7;
 
         #region Usuários
 
@@ -128,26 +129,6 @@ namespace ControleEstoque.web.Controllers
         public ActionResult ExcluirCategoriaProduto(int id)
         {
             return Json(CategoriaProdutoModel.ExcluirPorId(id));
-        }
-
-        #endregion
-
-        #region Marcas de Produtos
-
-        [Authorize]
-        public ActionResult MarcaProduto()
-        {
-            return View();
-        }
-
-        #endregion
-
-        #region Locais de Produtos
-
-        [Authorize]
-        public ActionResult LocalProduto()
-        {
-            return View();
         }
 
         #endregion
@@ -274,6 +255,88 @@ namespace ControleEstoque.web.Controllers
 
         #endregion
 
+        #region Fornecedores
+
+        [Authorize]
+        public ActionResult Fornecedor()
+        {
+            ViewBag.QuantMaxLinhaPorPagina = _quantMaxLinhaPorPagina;
+            ViewBag.PaginaAtual = 1;
+
+            var lista = FornecedorModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhaPorPagina);
+            var quant = FornecedorModel.RecuperarQuantidadeReg();
+
+            var difQuantPaginas = (quant % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
+            ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);
+
+            return View(lista);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public JsonResult FornecedorPagina(int pagina)
+        {
+            var lista = FornecedorModel.RecuperarLista(pagina, _quantMaxLinhaPorPagina);
+
+            var difQuantPaginas = (lista.Count % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
+            ViewBag.QuantPaginas = (lista.Count / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);
+
+            return Json(lista);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public JsonResult RecuperarFornecedor(int id)
+        {
+            return Json(FornecedorModel.RecuperarPorId(id));
+        }
+
+        [HttpPost]
+        [Authorize]
+        public JsonResult SalvarFornecedor(FornecedorModel model)
+        {
+            var resultado = "OK";
+            var mensagens = new List<string>();
+            var idSalvo = string.Empty;
+
+            if (!ModelState.IsValid)
+            {
+                resultado = "AVISO";
+                mensagens = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+            }
+            else
+            {
+                try
+                {
+                    var id = model.SalvarFornecedor();
+                    if (id > 0)
+                    {
+                        idSalvo = id.ToString();
+                    }
+                    else
+                    {
+                        resultado = "ERRO";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    resultado = "ERRO";
+                }
+
+            }
+
+            return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public JsonResult ExcluirFornecedor(int id)
+        {
+            return Json(FornecedorModel.ExcluirPorId(id));
+        }
+
+        #endregion
+
         #region Paises
 
         [Authorize]
@@ -298,16 +361,6 @@ namespace ControleEstoque.web.Controllers
 
         [Authorize]
         public ActionResult Cidade()
-        {
-            return View();
-        }
-
-        #endregion
-
-        #region Fornecedores
-
-        [Authorize]
-        public ActionResult Fornecedor()
         {
             return View();
         }

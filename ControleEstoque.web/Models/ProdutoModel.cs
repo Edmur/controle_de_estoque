@@ -10,7 +10,7 @@ namespace ControleEstoque.web.Models
 {
     public class ProdutoModel
     {
-        public int Id { get; set; }
+        public int Id_Produto { get; set; }
         [Required(ErrorMessage = "Categoria deve ser informada.")]
         public int Id_Categoria { get; set; }
         [Required(ErrorMessage = "Fornecedor deve ser informado.")]
@@ -46,7 +46,7 @@ namespace ControleEstoque.web.Models
                     {
                         ret.Add(new ProdutoModel
                         {
-                            Id = Convert.ToInt32(dtreader["id_produto"]),
+                            Id_Produto = Convert.ToInt32(dtreader["id_produto"]),
                             Id_Categoria = Convert.ToInt32(dtreader["id_categoria"]),
                             Id_Fornecedor = Convert.ToInt32(dtreader["id_fornecedor"]),
                             Ean = Convert.ToString(dtreader["ean"]),
@@ -82,7 +82,7 @@ namespace ControleEstoque.web.Models
                     {
                         ret = new ProdutoModel
                         {
-                            Id = Convert.ToInt32(dtreader["id_produto"]),
+                            Id_Produto = Convert.ToInt32(dtreader["id_produto"]),
                             Id_Categoria = Convert.ToInt32(dtreader["id_categoria"]),
                             Id_Fornecedor = Convert.ToInt32(dtreader["id_fornecedor"]),
                             Ean = Convert.ToString(dtreader["ean"]),
@@ -125,7 +125,7 @@ namespace ControleEstoque.web.Models
         public int SalvarProduto()
         {
             var ret = 0;
-            var model = RecuperarPorId(this.Id);
+            var model = RecuperarPorId(this.Id_Produto);
 
             using (var conexao = new MySqlConnection())
             {
@@ -151,7 +151,7 @@ namespace ControleEstoque.web.Models
                     else
                     {
                         comando.CommandText = "update tb_produto set id_categoria=@id_categoria, id_fornecedor=@id_fornecedor, ean=@ean, descricao=@descricao, preco_custo=@preco_custo, preco_venda=@preco_venda, id_unidade_medida=@id_unidade_medida, qt_unidade=@qt_unidade, status=@ativo where id_produto = @id";
-                        comando.Parameters.Add("@id", MySqlDbType.VarChar).Value = this.Id;
+                        comando.Parameters.Add("@id", MySqlDbType.VarChar).Value = this.Id_Produto;
                         comando.Parameters.Add("@id_categoria", MySqlDbType.VarChar).Value = this.Id_Categoria;
                         comando.Parameters.Add("@id_fornecedor", MySqlDbType.VarChar).Value = this.Id_Fornecedor;
                         comando.Parameters.Add("@ean", MySqlDbType.VarChar).Value = this.Ean;
@@ -163,7 +163,7 @@ namespace ControleEstoque.web.Models
                         comando.Parameters.Add("@ativo", MySqlDbType.Bit).Value = this.Ativo ? 1 : 0;
                         if (comando.ExecuteNonQuery() > 0)
                         {
-                            ret = this.Id;
+                            ret = this.Id_Produto;
                         }
                     }
                 }

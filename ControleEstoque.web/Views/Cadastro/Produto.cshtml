@@ -87,21 +87,21 @@
                     <tbody>
                         @foreach (var item in Model)
                         {
-                        <tr data-id="@item.Id">
-                            <td class="detalhe-left">@item.Id_Categoria</td>
-                            <td class="detalhe-left">@item.Id_Fornecedor</td>
-                            <td class="detalhe-center">@item.Ean</td>
-                            <td class="detalhe-left">@item.Descricao</td>
-                            <td class="detalhe-right">@item.PrecoCusto</td>
-                            <td class="detalhe-right">@item.PrecoVenda</td>
-                            <td class="detalhe-center">@item.Id_UnidadeMedida</td>
-                            <td class="detalhe-right">@item.Qt_UnidadeMedida</td>
-                            <td class="detalhe-center">@{var ativo = (item.Ativo ? "Sim" : "Não");}@ativo</td>
-                            <td>
-                                <a class="btn-pequeno btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-                                <a class="btn-pequeno btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-                            </td>
-                        </tr>
+                            <tr data-id="@item.Id_Produto">
+                                <td class="detalhe-left">@item.Id_Categoria</td>
+                                <td class="detalhe-left">@item.Id_Fornecedor</td>
+                                <td class="detalhe-center">@item.Ean</td>
+                                <td class="detalhe-left">@item.Descricao</td>
+                                <td class="detalhe-right">@item.PrecoCusto</td>
+                                <td class="detalhe-right">@item.PrecoVenda</td>
+                                <td class="detalhe-center">@item.Id_UnidadeMedida</td>
+                                <td class="detalhe-right">@item.Qt_UnidadeMedida</td>
+                                <td class="detalhe-center">@{var ativo = (item.Ativo ? "Sim" : "Não");}@ativo</td>
+                                <td>
+                                    <a class="btn-pequeno btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                                    <a class="btn-pequeno btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -114,18 +114,31 @@
     <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
     <fieldset>
         <div class="row">
+
             <div class="form-group">
                 @Html.Label("txt_categoria", "Categoria", new { @class = "col-md-3 control-label" })
                 <div class="col-md-9">
-                    @Html.TextBox("txt_categoria", null, new { @class = "form-control" })
+                    <select class="combobox input-large form-control" name="normal">
+                        <option value="" selected="selected">Selecione a categoria</option>
+                        <option value="1">Categoria 1</option>
+                        <option value="2">Categoria 2</option>
+                        <option value="3">Categoria 3</option>
+                    </select>
                 </div>
             </div>
+
             <div class="form-group">
                 @Html.Label("txt_fornecedor", "Fornecedor", new { @class = "col-md-3 control-label" })
                 <div class="col-md-9">
-                    @Html.TextBox("txt_fornecedor", null, new { @class = "form-control" })
+                    <select class="combobox input-large form-control" name="normal">
+                        <option value="" selected="selected">Selecione o fornecedor</option>
+                        <option value="1">Fornecedor 1</option>
+                        <option value="2">Fornecedor 2</option>
+                        <option value="3">Fornecedor 3</option>
+                    </select>
                 </div>
             </div>
+
             <div class="form-group">
                 @Html.Label("txt_ean", "Ean", new { @class = "col-md-3 control-label" })
                 <div class="col-md-9">

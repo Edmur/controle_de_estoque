@@ -187,6 +187,7 @@
     </Compile>
     <Compile Include="Helpers\CriptoHelper.cs" />
     <Compile Include="Models\CategoriaProdutoModel.cs" />
+    <Compile Include="Models\FornecedorModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\ProdutoModel.cs" />
     <Compile Include="Models\UnidadeMedidaModel.cs" />
@@ -236,8 +237,6 @@
     <Content Include="Views\Home\Sobre.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Cadastro\CategoriaProduto.cshtml" />
-    <Content Include="Views\Cadastro\MarcaProduto.cshtml" />
-    <Content Include="Views\Cadastro\LocalProduto.cshtml" />
     <Content Include="Views\Cadastro\UnidadeMedida.cshtml" />
     <Content Include="Views\Cadastro\Produto.cshtml" />
     <Content Include="Views\Cadastro\Pais.cshtml" />
