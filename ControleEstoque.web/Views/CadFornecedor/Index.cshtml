@@ -1,0 +1,150 @@
+﻿@model List<ControleEstoque.web.Models.FornecedorModel>
+@{
+    Layout = "~/Views/Shared/_Cadastro.cshtml";
+    ViewBag.Title = "Fornecedores";
+}
+
+@section Styles {
+    <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
+    <link href="~/Content/Cadastro/Fornecedor.css" rel="stylesheet" />
+}
+
+@section TituloGrid {
+    <th class="cabecalho-center">Nome</th>
+    <th class="cabecalho-center">Cpf / Cnpj</th>
+    <th class="cabecalho-center">Celular 1</th>
+    <th class="cabecalho-center">Email</th>
+    <th class="cabecalho-center">Ativo</th>
+    <th class="cabecalho-center">Ação</th>
+}
+
+@section LinhaGrid {
+    @{
+        var linha = 0;
+        foreach (var item in Model)
+        {
+            linha++;
+            if (ViewBag.QuantMaxLinhaPorPagina <= 7)
+            {
+                var ativo = (item.Ativo ? "Sim" : "Não");
+
+                <tr data-id="@item.Id">
+                    <td class="detalhe-left">@item.Nome</td>
+                    <td class="detalhe-center">@item.CpfCnpj</td>
+                    <td class="detalhe-left">@item.TelefoneCelular1</td>
+                    <td class="detalhe-left">@item.Email</td>
+                    <td class="detalhe-center">@ativo</td>
+                    <td>
+                        <a class="btn-pequeno btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                        <a class="btn-pequeno btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+}
+
+@section CamposCadastro {
+    <div class="row">
+        <div class="form-group">
+            @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_cpf_cnpj", "Cpf / Cnpj", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_cpf_cnpj", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_tel_fixo", "Telefone", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_tel_fixo", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_tel_celular_1", "Celular 1", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_tel_celular_1", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_tel_celular_2", "Celular 2", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_tel_celular_1", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_email", "E-mail", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_email", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_endereco", "Logradouro", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_endereco", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_numero", "Número", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_numero", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_complemento", "Complemento", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_complemento", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_bairro", "Bairro", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_bairro", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_cep", "Cep", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_cep", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_cidade", "Cidade", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_cidade", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_uf", "UF", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_uf", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.CheckBox("cbx_ativo")
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script src="~/Scripts/bootstrap-select.js"></script>
+    <script>
+        var titulo_pagina = 'Cadastro de ' + '@ViewBag.Title';
+        var url_excluir = '@Url.Action("ExcluirFornecedor", "CadFornecedor")';
+        var url_alterar = '@Url.Action("RecuperarFornecedor", "CadFornecedor")';
+        var url_confirmar = '@Url.Action("SalvarFornecedor", "CadFornecedor")';
+        var url_pagina = '@Url.Action("FornecedorPagina", "CadFornecedor")';
+    </script>
+    <script src="~/Scripts/Cadastro/CadFornecedor.js"></script>
+}

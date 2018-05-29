@@ -63,7 +63,7 @@ namespace ControleEstoque.web.Models
 
                     comando.Connection = conexao;
                     comando.CommandText = string.Format("select * from tb_fornecedor order by nome limit {0}, {1}",
-                        pos > 0 ? pos - 1 : 0, tamPagina );
+                        pos > 0 ? pos : 0, tamPagina );
                     MySqlDataReader dtreader = comando.ExecuteReader();
 
                     while (dtreader.Read())

@@ -1,0 +1,37 @@
+﻿#grid_cadastro > thead > tr th:nth-child(1) {
+    width: 500px;
+}
+
+#grid_cadastro > thead > tr th:nth-child(2) {
+    width: 150px;
+}
+
+#grid_cadastro > thead > tr th:nth-child(3) {
+    width: 120px;
+}
+
+#grid_cadastro > thead > tr th:nth-child(4) {
+    width: 210px;
+}
+
+#grid_cadastro > thead > tr th:nth-child(5) {
+    width: 70px;
+}
+
+#cadastro {
+    width: 93%;
+    margin: 0 auto;
+}
+
+#cadastro_cabecalho {
+    border-bottom: 1px #dddddd solid;
+}
+
+#cadastro_conteudo {
+    margin-top: 20px;
+}
+
+#cabecalho_grid {
+    margin-bottom: 20px;
+}
+

@@ -1,0 +1,141 @@
+﻿@model List<ControleEstoque.web.Models.ProdutoModel>
+@{
+    Layout = "~/Views/Shared/_Cadastro.cshtml";
+    ViewBag.Title = "Produtos";
+}
+
+@section Styles {
+    <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
+    <link href="~/Content/Cadastro/Produto.css" rel="stylesheet" />
+}
+
+@section TituloGrid {
+    <th class="cabecalho-center">Categoria</th>
+    <th class="cabecalho-center">Fornecedor</th>
+    <th class="cabecalho-center">Ean</th>
+    <th class="cabecalho-center">Descrição</th>
+    <th class="cabecalho-center">Preço de Custo</th>
+    <th class="cabecalho-center">Preço de Venda</th>
+    <th class="cabecalho-center">Un.Medida</th>
+    <th class="cabecalho-center">Qt.Un.</th>
+    <th class="cabecalho-center">Ativo</th>
+    <th class="cabecalho-center">Ação</th>
+}
+
+@section LinhaGrid {
+    @{
+        var linha = 0;
+        foreach (var item in Model)
+        {
+            linha++;
+            if (ViewBag.QuantMaxLinhaPorPagina <= 7)
+            {
+                var ativo = (item.Ativo ? "Sim" : "Não");
+
+                <tr data-id="@item.Id_Produto">
+                    <td class="detalhe-left">@item.Id_Categoria</td>
+                    <td class="detalhe-left">@item.Id_Fornecedor</td>
+                    <td class="detalhe-center">@item.Ean</td>
+                    <td class="detalhe-left">@item.Descricao</td>
+                    <td class="detalhe-right">@item.PrecoCusto</td>
+                    <td class="detalhe-right">@item.PrecoVenda</td>
+                    <td class="detalhe-center">@item.Id_UnidadeMedida</td>
+                    <td class="detalhe-right">@item.Qt_UnidadeMedida</td>
+                    <td class="detalhe-center">@ativo</td>
+                    <td>
+                        <a class="btn-pequeno btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                        <a class="btn-pequeno btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+}
+
+@section CamposCadastro {
+    <div class="row">
+
+        <div class="form-group">
+            @Html.Label("txt_categoria", "Categoria", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                <select class="combobox input-large form-control" name="normal">
+                    <option value="" selected="selected">Selecione a categoria</option>
+                    <option value="1">Categoria 1</option>
+                    <option value="2">Categoria 2</option>
+                    <option value="3">Categoria 3</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("txt_fornecedor", "Fornecedor", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                <select class="combobox input-large form-control" name="normal">
+                    <option value="" selected="selected">Selecione o fornecedor</option>
+                    <option value="1">Fornecedor 1</option>
+                    <option value="2">Fornecedor 2</option>
+                    <option value="3">Fornecedor 3</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("txt_ean", "Ean", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_ean", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_descricao", "Descrição", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_descricao", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_preco_custo", "Preço de custo", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_preco_custo", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_preco_venda", "Preço de venda", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_preco_venda", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_unidade_medida", "UM", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_unidade_medida", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_qt_unidade", "Qt.Un.", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_qt_unidade", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.CheckBox("cbx_ativo")
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script src="~/Scripts/bootstrap-select.js"></script>
+    <script>
+        var titulo_pagina = 'Cadastro de ' + '@ViewBag.Title';
+        var url_excluir = '@Url.Action("ExcluirProduto", "CadProduto")';
+        var url_alterar = '@Url.Action("RecuperarProduto", "CadProduto")';
+        var url_confirmar = '@Url.Action("SalvarProduto", "CadProduto")';
+        var url_pagina = '@Url.Action("ProdutoPagina", "CadProduto")';
+    </script>
+    <script src="~/Scripts/Cadastro/CadProduto.js"></script>
+}

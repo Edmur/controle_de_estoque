@@ -177,6 +177,11 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\CadastroController.cs" />
+    <Compile Include="Controllers\Cadastro\CadUnidadeMedidaController.cs" />
+    <Compile Include="Controllers\Cadastro\CadProdutoController.cs" />
+    <Compile Include="Controllers\Cadastro\CadFornecedorController.cs" />
+    <Compile Include="Controllers\Cadastro\CadUsuarioController.cs" />
+    <Compile Include="Controllers\Cadastro\CadCategoriaProdutoController.cs" />
     <Compile Include="Controllers\ContaController.cs" />
     <Compile Include="Controllers\GraficoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -195,15 +200,24 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-select.css" />
+    <Content Include="Content\bootstrap-select.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Cadastro\CategoriaProduto.css" />
+    <Content Include="Content\Cadastro\Fornecedor.css" />
+    <Content Include="Content\Cadastro\Produto.css" />
+    <Content Include="Content\Cadastro\UnidadeMedida.css" />
+    <Content Include="Content\Cadastro\Usuario.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootbox.min.js" />
+    <Content Include="Scripts\bootstrap-select.js" />
+    <Content Include="Scripts\bootstrap-select.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -211,6 +225,12 @@
     </Content>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\Cadastro\CadCategoriaProduto.js" />
+    <Content Include="Scripts\Cadastro\CadFornecedor.js" />
+    <Content Include="Scripts\Cadastro\CadProduto.js" />
+    <Content Include="Scripts\Cadastro\CadUnidadeMedida.js" />
+    <Content Include="Scripts\Cadastro\CadTodos.js" />
+    <Content Include="Scripts\Cadastro\CadUsuario.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -236,15 +256,15 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Sobre.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Cadastro\CategoriaProduto.cshtml" />
-    <Content Include="Views\Cadastro\UnidadeMedida.cshtml" />
-    <Content Include="Views\Cadastro\Produto.cshtml" />
+    <Content Include="Views\CadCategoriaProduto\Index.cshtml" />
+    <Content Include="Views\CadUnidadeMedida\Index.cshtml" />
+    <Content Include="Views\CadProduto\Index.cshtml" />
     <Content Include="Views\Cadastro\Pais.cshtml" />
     <Content Include="Views\Cadastro\Estado.cshtml" />
     <Content Include="Views\Cadastro\Cidade.cshtml" />
-    <Content Include="Views\Cadastro\Fornecedor.cshtml" />
+    <Content Include="Views\CadFornecedor\Index.cshtml" />
     <Content Include="Views\Cadastro\PerfilUsuario.cshtml" />
-    <Content Include="Views\Cadastro\Usuario.cshtml" />
+    <Content Include="Views\CadUsuario\Index.cshtml" />
     <Content Include="Views\Operacao\EntradaEstoque.cshtml" />
     <Content Include="Views\Operacao\SaidaEstoque.cshtml" />
     <Content Include="Views\Operacao\LancPerdaEstoque.cshtml" />
@@ -254,6 +274,7 @@
     <Content Include="Views\Grafico\PerdaMes.cshtml" />
     <Content Include="Views\Grafico\EntradaSaidaMes.cshtml" />
     <Content Include="Views\Conta\Login.cshtml" />
+    <Content Include="Views\Shared\_Cadastro.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

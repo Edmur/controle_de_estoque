@@ -1,0 +1,52 @@
+﻿#grid_cadastro > thead > tr th:nth-child(1) {
+    width: 140px;
+}
+
+#grid_cadastro > thead > tr th:nth-child(2) {
+    width: 170px;
+}
+
+#grid_cadastro > thead > tr th:nth-child(3) {
+    width: 100px;
+}
+
+#grid_cadastro > thead > tr th:nth-child(4) {
+    width: 208px;
+}
+
+#grid_cadastro > thead > tr th:nth-child(5) {
+    width: 125px;
+}
+
+#grid_cadastro > thead > tr th:nth-child(6) {
+    width: 125px;
+}
+
+#grid_cadastro > thead > tr th:nth-child(7) {
+    width: 90px;
+}
+
+#grid_cadastro > thead > tr th:nth-child(8) {
+    width: 60px;
+}
+
+#grid_cadastro > thead > tr th:nth-child(9) {
+    width: 60px;
+}
+
+#cadastro {
+    width: 95%;
+    margin: 0 auto;
+}
+
+#cadastro_cabecalho {
+    border-bottom: 1px #dddddd solid;
+}
+
+#cadastro_conteudo {
+    margin-top: 20px;
+}
+
+#cabecalho_grid {
+    margin-bottom: 20px;
+}

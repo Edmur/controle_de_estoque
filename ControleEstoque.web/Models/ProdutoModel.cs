@@ -29,7 +29,25 @@ namespace ControleEstoque.web.Models
         public int Qt_UnidadeMedida { get; set; }
         public bool Ativo { get; set; }
 
-        public static List<ProdutoModel> RecuperarLista()
+        public static int RecuperarQuantidadeReg()
+        {
+            var ret = 0;
+            using (var conexao = new MySqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                conexao.Open();
+                using (var comando = new MySqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = "select count(*) from tb_produto";
+                    ret = Convert.ToInt32(comando.ExecuteScalar());
+                }
+            }
+
+            return ret;
+        }
+
+        public static List<ProdutoModel> RecuperarLista(int pagina, int tamPagina)
         {
             var ret = new List<ProdutoModel>();
             using (var conexao = new MySqlConnection())
@@ -38,8 +56,11 @@ namespace ControleEstoque.web.Models
                 conexao.Open();
                 using (var comando = new MySqlCommand())
                 {
+                    var pos = (pagina - 1) * tamPagina;
+
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format("select * from tb_produto order by descricao");
+                    comando.CommandText = string.Format("select * from tb_produto order by descricao limit {0}, {1}",
+                        pos > 0 ? pos : 0, tamPagina );
                     MySqlDataReader dtreader = comando.ExecuteReader();
 
                     while (dtreader.Read())
