@@ -1,0 +1,71 @@
+﻿@model List<ControleEstoque.web.Models.CidadeModel>
+@{
+    Layout = "~/Views/Shared/_Cadastro.cshtml";
+    ViewBag.Title = "Cidades";
+}
+
+@section Styles {
+    <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
+    <link href="~/Content/Cadastro/Cidade.css" rel="stylesheet" />
+}
+
+@section TituloGrid {
+    <th class="cabecalho-left">UF</th>
+    <th class="cabecalho-left">Nome</th>
+    <th class="cabecalho-center">Ação</th>
+}
+
+@section LinhaGrid {
+    @{
+        var linha = 0;
+        foreach (var item in Model)
+        {
+            linha++;
+            if (ViewBag.QuantMaxLinhaPorPagina <= 7)
+            {
+
+                <tr data-id="@item.Id">
+                    <td class="detalhe-center">@item.Id_Uf</td>
+                    <td class="detalhe-left">@item.Nome</td>
+                    <td>
+                        <a class="btn-pequeno btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                        <a class="btn-pequeno btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+}
+
+@section CamposCadastro {
+    <div class="row">
+        <div class="form-group">
+            @Html.Label("id_uf", "UF", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("id_uf", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/Scripts/bootstrap-select.js"></script>
+    <script>
+        var titulo_pagina = 'Cadastro de ' + '@ViewBag.Title';
+        var url_excluir = '@Url.Action("ExcluirCidade", "CadCidade")';
+        var url_alterar = '@Url.Action("RecuperarCidade", "CadCidade")';
+        var url_confirmar = '@Url.Action("SalvarCidade", "CadCidade")';
+        var url_pagina = '@Url.Action("CidadePagina", "CadCidade")';
+    </script>
+    <script src="~/Scripts/Cadastro/CadCidade.js"></script>
+}

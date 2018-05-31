@@ -7,25 +7,50 @@ using ControleEstoque.web.Models;
 
 namespace ControleEstoque.web.Controllers
 {
+    [Authorize(Roles = "Gerente")]
     public class CadUsuarioController : Controller
     {
         private const int _quantMaxLinhaPorPagina = 7;
+        private const string _senhaPadrao = "{@127;@188}";
 
-        [Authorize]
         public ActionResult Index()
         {
-            return View(UsuarioModel.RecuperarLista());
+            ViewBag.ListaPerfil = PerfilModel.RecuperarLista();
+            ViewBag.SenhaPadrao = _senhaPadrao;
+            ViewBag.ListaTamPag = new SelectList(new int[] { _quantMaxLinhaPorPagina, 14, 21, 28 }, _quantMaxLinhaPorPagina);
+            ViewBag.QuantMaxLinhaPorPagina = _quantMaxLinhaPorPagina;
+            ViewBag.PaginaAtual = 1;
+
+            var lista = UsuarioModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhaPorPagina);
+            var quant = UsuarioModel.RecuperarQuantidadeReg();
+
+            var difQuantPaginas = (quant % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
+            ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);
+
+            return View(lista);
         }
 
         [HttpPost]
-        [Authorize]
+        public JsonResult UsuarioPagina(int pagina, int tamPag)
+        {
+            var lista = UsuarioModel.RecuperarLista(pagina, tamPag);
+
+            var difQuantPaginas = (lista.Count % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
+            ViewBag.QuantPaginas = (lista.Count / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);
+
+            return Json(lista);
+        }
+
+        [HttpPost]
         public ActionResult RecuperarUsuario(int id)
         {
-            return Json(UsuarioModel.RecuperarPorId(id));
+            var ret = UsuarioModel.RecuperarPorId(id);
+            ret.Senha = _senhaPadrao;
+            ret.CarregarPerfis();
+            return Json(ret);
         }
 
         [HttpPost]
-        [Authorize]
         public ActionResult SalvarUsuario(UsuarioModel model)
         {
             var resultado = "OK";
@@ -41,6 +66,11 @@ namespace ControleEstoque.web.Controllers
             {
                 try
                 {
+                    if (model.Senha == _senhaPadrao)
+                    {
+                        model.Senha = "";
+                    }
+
                     var id = model.SalvarUsuario();
                     if (id > 0)
                     {
@@ -62,7 +92,6 @@ namespace ControleEstoque.web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public ActionResult ExcluirUsuario(int id)
         {
             return Json(UsuarioModel.ExcluirPorId(id));

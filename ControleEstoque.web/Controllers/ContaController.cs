@@ -30,7 +30,11 @@ namespace ControleEstoque.web.Controllers
 
             if (usuario != null)
             {
-                FormsAuthentication.SetAuthCookie(usuario.Nome, login.LembrarMe);
+                var ticket = FormsAuthentication.Encrypt(new FormsAuthenticationTicket(
+                    1, usuario.Nome, DateTime.Now, DateTime.Now.AddHours(1), login.LembrarMe, usuario.RecuperarStringNomePerfis()));
+                var coockie = new HttpCookie(FormsAuthentication.FormsCookieName, ticket);
+                Response.Cookies.Add(coockie);
+
                 if (Url.IsLocalUrl(returnUrl))
                 {
                     return Redirect(returnUrl);

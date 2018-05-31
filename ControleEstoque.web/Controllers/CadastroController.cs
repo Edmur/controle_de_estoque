@@ -41,15 +41,5 @@ namespace ControleEstoque.web.Controllers
 
         #endregion
 
-        #region Perfis de Usuarios
-
-        [Authorize]
-        public ActionResult PerfilUsuario()
-        {
-            return View();
-        }
-
-        #endregion
-
     }
 }

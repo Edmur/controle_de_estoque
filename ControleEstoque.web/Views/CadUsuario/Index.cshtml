@@ -1,106 +1,115 @@
 ﻿@model List<ControleEstoque.web.Models.UsuarioModel>
 @{
+    Layout = "~/Views/Shared/_Cadastro.cshtml";
     ViewBag.Title = "Usuários";
+    ViewBag.Lista = Model;
 }
-<link href="~/Content/Cadastro/Usuario.css" rel="stylesheet" />
-<div id="cadastro">
-    <section id="cadastro_cabecalho">
-        <h1 class="cabecalho-center">Cadastro de @ViewBag.Title</h1>
-    </section>
-    <section id="cadastro_conteudo">
-        <div id="cabecalho_grid" class="row">
-            <div class="col-md-12">
-                <a id="btn_incluir" class="btn btn-success pull-right" role="button"><i class="glyphicon glyphicon-plus"></i>Incluir</a>
+
+@section Styles {
+    <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
+    <link href="~/Content/Cadastro/Usuario.css" rel="stylesheet" />
+}
+
+@section TituloGrid {
+    <th class="cabecalho-left">Usuário</th>
+    <th class="cabecalho-center">Nome</th>
+    <th class="cabecalho-center">E-mail</th>
+    <th class="cabecalho-center">Ativo</th>
+    <th class="cabecalho-center">Ação</th>
+}
+
+@section CamposCadastro {
+    <div class="row">
+        <div class="form-group">
+            @Html.Label("txt_login", "Usuário", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_login", null, new { @class = "form-control" })
             </div>
         </div>
-        <div class="row">
+        <div class="form-group">
+            @Html.Label("txt_senha", "Senha", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_senha", null, new { @class = "form-control", type = "password" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_email", "E-mail", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_email", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.CheckBox("cbx_ativo")
+            </div>
+        </div>
+
+        <div class="form-group" style="margin: 0 15px 15px 15px">
             <div class="col-md-12">
-                <table id="grid_cadastro" class="table table-bordered table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th class="cabecalho-left">Usuário</th>
-                            <th class="cabecalho-center">Nome</th>
-                            <th class="cabecalho-center">E-mail</th>
-                            <th class="cabecalho-center">Ativo</th>
-                            <th class="cabecalho-center">Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
+                <h4 class="text-center">Perfis</h4>
+                <div class="well" style="max-height: 180px; padding: 5px; margin: 0; overflow: auto">
+                    <ul id="lista_perfil" class="list-group checked-list-box" style="margin-bottom: 0">
+                        @foreach (var perfil in (List<ControleEstoque.web.Models.PerfilModel>)ViewBag.ListaPerfil)
                         {
-                            <tr data-id="@item.Id">
-                                <td class="detalhe-left">@item.Login</td>
-                                <td class="detalhe-left">@item.Nome</td>
-                                <td class="detalhe-left">@item.Email</td>
-                                <td class="detalhe-center">@{var ativo = (item.Ativo ? "Sim" : "Não");}@ativo</td>
-                                <td>
-                                    <a class="btn-pequeno btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-                                    <a class="btn-pequeno btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-                                </td>
-                            </tr>
+                            <li class="list-group-item">
+                                <label style="margin-bottom: 0">
+                                    <input type="checkbox" data-id-perfil="@perfil.Id" /> @perfil.Nome
+                                </label>
+                            </li>
                         }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-</div>
-@Html.Hidden("id_cadastro")
-<div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
-    <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
-    <fieldset>
-        <div class="row">
-            <div class="form-group">
-                @Html.Label("txt_login", "Usuário", new { @class = "col-md-3 control-label" })
-                <div class="col-md-9">
-                    @Html.TextBox("txt_login", null, new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("txt_senha", "Senha", new { @class = "col-md-3 control-label" })
-                <div class="col-md-9">
-                    @Html.TextBox("txt_senha", null, new { @class = "form-control", type = "password" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
-                <div class="col-md-9">
-                    @Html.TextBox("txt_nome", null, new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("txt_email", "E-mail", new { @class = "col-md-3 control-label" })
-                <div class="col-md-9">
-                    @Html.TextBox("txt_email", null, new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
-                <div class="col-md-9">
-                    @Html.CheckBox("cbx_ativo")
+                    </ul>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <div class="modal-footer">
-                        <a id="btn_sair" class="btn btn-default" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> Sair</a>
-                        <a id="btn_confirmar" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-ok"></i> Salvar</a>
-                    </div>
-                    <div id="msg_aviso" class="alert alert-warning invisivel">Falta preencher os campos acima.</div>
-                    <div id="msg_erro" class="alert alert-danger invisivel">Ops! Ocorreu um erro.</div>
-                </div>
-            </div>
-        </div>
-    </fieldset>
-</div>
+
+    </div>
+}
+
+@section LinhaGrid {
+    @{
+        var linha = 0;
+
+        foreach (var item in Model)
+        {
+            linha++;
+            if (ViewBag.QuantMaxLinhaPorPagina <= 7)
+            {
+                var ativo = (item.Ativo ? "Sim" : "Não");
+
+                <tr data-id="@item.Id">
+                    <td class="detalhe-left">@item.Login</td>
+                    <td class="detalhe-left">@item.Nome</td>
+                    <td class="detalhe-left">@item.Email</td>
+                    <td class="detalhe-center">@ativo</td>
+                    <td>
+                        <a class="btn-pequeno btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                        <a class="btn-pequeno btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+}
+
 @section Scripts{
+    <script src="~/Scripts/bootstrap-select.js"></script>
     <script>
         var titulo_pagina = 'Cadastro de ' + '@ViewBag.Title';
         var url_excluir = '@Url.Action("ExcluirUsuario", "CadUsuario")';
         var url_alterar = '@Url.Action("RecuperarUsuario", "CadUsuario")';
         var url_confirmar = '@Url.Action("SalvarUsuario", "CadUsuario")';
+        var url_pagina = '@Url.Action("UsuarioPagina", "CadUsuario")';
     </script>
     <script src="~/Scripts/Cadastro/CadUsuario.js"></script>
 }

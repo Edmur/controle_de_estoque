@@ -8,14 +8,13 @@ using System.Web;
 
 namespace ControleEstoque.web.Models
 {
-    public class UnidadeMedidaModel
+    public class CidadeModel
     {
         public int Id { get; set; }
-        [Required(ErrorMessage = "Sigla deve ser informada.")]
-        public string Sigla { get; set; }
-        [Required(ErrorMessage = "Descrição deve ser informada.")]
-        public string Descricao { get; set; }
-        public bool Ativo { get; set; }
+        [Required(ErrorMessage = "UF deve ser informada.")]
+        public int Id_Uf { get; set; }
+        [Required(ErrorMessage = "Nome deve ser informado.")]
+        public string Nome { get; set; }
 
         public static int RecuperarQuantidadeReg()
         {
@@ -27,7 +26,7 @@ namespace ControleEstoque.web.Models
                 using (var comando = new MySqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = "select count(*) from tb_unidade_medida";
+                    comando.CommandText = "select count(*) from tb_cidade";
                     ret = Convert.ToInt32(comando.ExecuteScalar());
                 }
             }
@@ -35,9 +34,9 @@ namespace ControleEstoque.web.Models
             return ret;
         }
 
-        public static List<UnidadeMedidaModel> RecuperarLista(int pagina, int tamPagina)
+        public static List<CidadeModel> RecuperarLista(int pagina, int tamPagina)
         {
-            var ret = new List<UnidadeMedidaModel>();
+            var ret = new List<CidadeModel>();
             using (var conexao = new MySqlConnection())
             {
                 var pos = (pagina - 1) * tamPagina;
@@ -47,18 +46,17 @@ namespace ControleEstoque.web.Models
                 using (var comando = new MySqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format("select * from tb_unidade_medida order by sigla  limit {0}, {1}",
+                    comando.CommandText = string.Format("select * from tb_cidade order by nome limit {0}, {1}",
                         pos > 0 ? pos : 0, tamPagina);
                     MySqlDataReader dtreader = comando.ExecuteReader();
 
                     while (dtreader.Read())
                     {
-                        ret.Add(new UnidadeMedidaModel
+                        ret.Add(new CidadeModel
                         {
-                            Id = Convert.ToInt32(dtreader["id_unidade_medida"]),
-                            Sigla = Convert.ToString(dtreader["sigla"]),
-                            Descricao = Convert.ToString(dtreader["descricao"]),
-                            Ativo = Convert.ToBoolean(dtreader["status"])
+                            Id = Convert.ToInt32(dtreader["id_cidade"]),
+                            Id_Uf = Convert.ToInt32(dtreader["id_uf"]),
+                            Nome = Convert.ToString(dtreader["nome"])
                         });
                     }
                 }
@@ -67,9 +65,9 @@ namespace ControleEstoque.web.Models
             return ret;
         }
 
-        public static UnidadeMedidaModel RecuperarPorId(int id)
+        public static CidadeModel RecuperarPorId(int id)
         {
-            UnidadeMedidaModel ret = null;
+            CidadeModel ret = null;
             using (var conexao = new MySqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
@@ -77,18 +75,17 @@ namespace ControleEstoque.web.Models
                 using (var comando = new MySqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = "select * from tb_unidade_medida where id_unidade_medida = @id";
+                    comando.CommandText = "select * from tb_cidade where id_cidade = @id";
                     comando.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
                     MySqlDataReader dtreader = comando.ExecuteReader();
 
                     if (dtreader.Read())
                     {
-                        ret = new UnidadeMedidaModel
+                        ret = new CidadeModel
                         {
-                            Id = Convert.ToInt32(dtreader["id_unidade_medida"]),
-                            Sigla = Convert.ToString(dtreader["sigla"]),
-                            Descricao = Convert.ToString(dtreader["descricao"]),
-                            Ativo = Convert.ToBoolean(dtreader["status"])
+                            Id = Convert.ToInt32(dtreader["id_cidade"]),
+                            Id_Uf = Convert.ToInt32(dtreader["id_uf"]),
+                            Nome = Convert.ToString(dtreader["nome"])
                         };
                     }
                 }
@@ -110,7 +107,7 @@ namespace ControleEstoque.web.Models
                     using (var comando = new MySqlCommand())
                     {
                         comando.Connection = conexao;
-                        comando.CommandText = "delete from tb_unidade_medida where id_unidade_medida = @id";
+                        comando.CommandText = "delete from tb_cidade where id_cidade = @id";
                         comando.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
                         ret = (comando.ExecuteNonQuery() > 0);
                     }
@@ -119,7 +116,7 @@ namespace ControleEstoque.web.Models
             return ret;
         }
 
-        public int SalvarUnidadeMedida()
+        public int SalvarCidade()
         {
             var ret = 0;
             var model = RecuperarPorId(this.Id);
@@ -133,19 +130,17 @@ namespace ControleEstoque.web.Models
                     comando.Connection = conexao;
                     if (model == null)
                     {
-                        comando.CommandText = "insert into tb_unidade_medida (sigla, descricao, status) values (@sigla, @descricao, @ativo); select max(id_unidade_medida) as id_unidade_medida from tb_unidade_medida";
-                        comando.Parameters.Add("@sigla", MySqlDbType.VarChar).Value = this.Sigla;
-                        comando.Parameters.Add("@descricao", MySqlDbType.VarChar).Value = this.Descricao;
-                        comando.Parameters.Add("@ativo", MySqlDbType.Bit).Value = this.Ativo ? 1 : 0;
+                        comando.CommandText = "insert into tb_cidade (id_uf, nome) values (@id_uf, @nome); select max(id_cidade) as id_cidade from tb_cidade ";
+                        comando.Parameters.Add("@id_uf", MySqlDbType.VarChar).Value = this.Id_Uf;
+                        comando.Parameters.Add("@nome", MySqlDbType.VarChar).Value = this.Nome;
                         ret = Convert.ToInt32(comando.ExecuteScalar());
                     }
                     else
                     {
-                        comando.CommandText = "update tb_unidade_medida set sigla=@sigla, descricao=@descricao, status=@ativo where id_unidade_medida = @id";
-                        comando.Parameters.Add("@id", MySqlDbType.VarChar).Value = this.Id;
-                        comando.Parameters.Add("@sigla", MySqlDbType.VarChar).Value = this.Sigla;
-                        comando.Parameters.Add("@descricao", MySqlDbType.VarChar).Value = this.Descricao;
-                        comando.Parameters.Add("@ativo", MySqlDbType.Bit).Value = this.Ativo ? 1 : 0;
+                        comando.CommandText = "update tb_cidade set id_uf=@id_uf, nome=@nome where id_cidade = @id";
+                        comando.Parameters.Add("@id", MySqlDbType.Int32).Value = this.Id;
+                        comando.Parameters.Add("@id_uf", MySqlDbType.VarChar).Value = this.Id_Uf;
+                        comando.Parameters.Add("@nome", MySqlDbType.VarChar).Value = this.Nome;
                         if (comando.ExecuteNonQuery() > 0)
                         {
                             ret = this.Id;

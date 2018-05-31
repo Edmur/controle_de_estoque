@@ -1,17 +1,16 @@
-﻿@model List<ControleEstoque.web.Models.UnidadeMedidaModel>
+﻿@model List<ControleEstoque.web.Models.PerfilModel>
 @{
     Layout = "~/Views/Shared/_Cadastro.cshtml";
-    ViewBag.Title = "Unidades de Medida";
+    ViewBag.Title = "Perfis de Usuário";
 }
 
 @section Styles {
     <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
-    <link href="~/Content/Cadastro/UnidadeMedida.css" rel="stylesheet" />
+    <link href="~/Content/Cadastro/Perfil.css" rel="stylesheet" />
 }
 
 @section TituloGrid {
-    <th class="cabecalho-center">Sigla</th>
-    <th class="cabecalho-left">Descrição</th>
+    <th class="cabecalho-left">Nome</th>
     <th class="cabecalho-center">Ativo</th>
     <th class="cabecalho-center">Ação</th>
 }
@@ -19,7 +18,6 @@
 @section LinhaGrid {
     @{
         var linha = 0;
-
         foreach (var item in Model)
         {
             linha++;
@@ -28,8 +26,7 @@
                 var ativo = (item.Ativo ? "Sim" : "Não");
 
                 <tr data-id="@item.Id">
-                    <td class="detalhe-center">@item.Sigla</td>
-                    <td class="detalhe-left">@item.Descricao</td>
+                    <td class="detalhe-left">@item.Nome</td>
                     <td class="detalhe-center">@ativo</td>
                     <td>
                         <a class="btn-pequeno btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
@@ -48,15 +45,9 @@
 @section CamposCadastro {
     <div class="row">
         <div class="form-group">
-            @Html.Label("txt_sigla", "Sigla", new { @class = "col-md-3 control-label" })
+            @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
             <div class="col-md-9">
-                @Html.TextBox("txt_sigla", null, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.Label("txt_descricao", "Descrição", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                @Html.TextBox("txt_descricao", null, new { @class = "form-control" })
+                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
             </div>
         </div>
         <div class="form-group">
@@ -67,14 +58,15 @@
         </div>
     </div>
 }
-@section Scripts{
+
+@section Scripts {
     <script src="~/Scripts/bootstrap-select.js"></script>
     <script>
         var titulo_pagina = 'Cadastro de ' + '@ViewBag.Title';
-        var url_excluir = '@Url.Action("ExcluirUnidadeMedida", "CadUnidadeMedida")';
-        var url_alterar = '@Url.Action("RecuperarUnidadeMedida", "CadUnidadeMedida")';
-        var url_confirmar = '@Url.Action("SalvarUnidadeMedida", "CadUnidadeMedida")';
-        var url_pagina = '@Url.Action("UnidadeMedidaPagina", "CadUnidadeMedida")';
+        var url_excluir = '@Url.Action("ExcluirPerfil", "CadPerfil")';
+        var url_alterar = '@Url.Action("RecuperarPerfil", "CadPerfil")';
+        var url_confirmar = '@Url.Action("SalvarPerfil", "CadPerfil")';
+        var url_pagina = '@Url.Action("PerfilPagina", "CadPerfil")';
     </script>
-    <script src="~/Scripts/Cadastro/CadUnidadeMedida.js"></script>
+    <script src="~/Scripts/Cadastro/CadPerfil.js"></script>
 }

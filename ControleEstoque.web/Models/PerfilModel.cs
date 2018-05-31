@@ -5,16 +5,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace ControleEstoque.web.Models
 {
-    public class UnidadeMedidaModel
+    public class PerfilModel
     {
         public int Id { get; set; }
-        [Required(ErrorMessage = "Sigla deve ser informada.")]
-        public string Sigla { get; set; }
-        [Required(ErrorMessage = "Descrição deve ser informada.")]
-        public string Descricao { get; set; }
+        [Required(ErrorMessage = "Nome do perfil deve ser informado.")]
+        public string Nome { get; set; }
         public bool Ativo { get; set; }
 
         public static int RecuperarQuantidadeReg()
@@ -27,7 +26,7 @@ namespace ControleEstoque.web.Models
                 using (var comando = new MySqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = "select count(*) from tb_unidade_medida";
+                    comando.CommandText = "select count(*) from tb_perfil";
                     ret = Convert.ToInt32(comando.ExecuteScalar());
                 }
             }
@@ -35,9 +34,9 @@ namespace ControleEstoque.web.Models
             return ret;
         }
 
-        public static List<UnidadeMedidaModel> RecuperarLista(int pagina, int tamPagina)
+        public static List<PerfilModel> RecuperarLista(int pagina = -1, int tamPagina = -1)
         {
-            var ret = new List<UnidadeMedidaModel>();
+            var ret = new List<PerfilModel>();
             using (var conexao = new MySqlConnection())
             {
                 var pos = (pagina - 1) * tamPagina;
@@ -47,17 +46,25 @@ namespace ControleEstoque.web.Models
                 using (var comando = new MySqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format("select * from tb_unidade_medida order by sigla  limit {0}, {1}",
-                        pos > 0 ? pos : 0, tamPagina);
+
+                    if (pagina == -1 || tamPagina == -1)
+                    {
+                        comando.CommandText = "select * from tb_perfil where status = 1 order by nome";
+                    }
+                    else
+                    {
+                        comando.CommandText = string.Format("select * from tb_perfil order by nome limit {0}, {1}",
+                            pos > 0 ? pos : 0, tamPagina);
+                    }
+
                     MySqlDataReader dtreader = comando.ExecuteReader();
 
                     while (dtreader.Read())
                     {
-                        ret.Add(new UnidadeMedidaModel
+                        ret.Add(new PerfilModel
                         {
-                            Id = Convert.ToInt32(dtreader["id_unidade_medida"]),
-                            Sigla = Convert.ToString(dtreader["sigla"]),
-                            Descricao = Convert.ToString(dtreader["descricao"]),
+                            Id = Convert.ToInt32(dtreader["id_perfil"]),
+                            Nome = Convert.ToString(dtreader["nome"]),
                             Ativo = Convert.ToBoolean(dtreader["status"])
                         });
                     }
@@ -67,9 +74,9 @@ namespace ControleEstoque.web.Models
             return ret;
         }
 
-        public static UnidadeMedidaModel RecuperarPorId(int id)
+        public static List<PerfilModel> RecuperarListaAtivos()
         {
-            UnidadeMedidaModel ret = null;
+            var ret = new List<PerfilModel>();
             using (var conexao = new MySqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
@@ -77,17 +84,44 @@ namespace ControleEstoque.web.Models
                 using (var comando = new MySqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = "select * from tb_unidade_medida where id_unidade_medida = @id";
+                    comando.CommandText = string.Format("select * from tb_perfil where status = 1 order by nome");
+                    MySqlDataReader dtreader = comando.ExecuteReader();
+
+                    while (dtreader.Read())
+                    {
+                        ret.Add(new PerfilModel
+                        {
+                            Id = Convert.ToInt32(dtreader["id_perfil"]),
+                            Nome = Convert.ToString(dtreader["nome"]),
+                            Ativo = Convert.ToBoolean(dtreader["status"])
+                        });
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        public static PerfilModel RecuperarPorId(int id)
+        {
+            PerfilModel ret = null;
+            using (var conexao = new MySqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                conexao.Open();
+                using (var comando = new MySqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = "select * from tb_perfil where id_perfil = @id";
                     comando.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
                     MySqlDataReader dtreader = comando.ExecuteReader();
 
                     if (dtreader.Read())
                     {
-                        ret = new UnidadeMedidaModel
+                        ret = new PerfilModel
                         {
-                            Id = Convert.ToInt32(dtreader["id_unidade_medida"]),
-                            Sigla = Convert.ToString(dtreader["sigla"]),
-                            Descricao = Convert.ToString(dtreader["descricao"]),
+                            Id = Convert.ToInt32(dtreader["id_perfil"]),
+                            Nome = Convert.ToString(dtreader["nome"]),
                             Ativo = Convert.ToBoolean(dtreader["status"])
                         };
                     }
@@ -110,7 +144,7 @@ namespace ControleEstoque.web.Models
                     using (var comando = new MySqlCommand())
                     {
                         comando.Connection = conexao;
-                        comando.CommandText = "delete from tb_unidade_medida where id_unidade_medida = @id";
+                        comando.CommandText = "delete from tb_perfil where id_perfil = @id";
                         comando.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
                         ret = (comando.ExecuteNonQuery() > 0);
                     }
@@ -119,7 +153,7 @@ namespace ControleEstoque.web.Models
             return ret;
         }
 
-        public int SalvarUnidadeMedida()
+        public int SalvarPerfil()
         {
             var ret = 0;
             var model = RecuperarPorId(this.Id);
@@ -133,18 +167,16 @@ namespace ControleEstoque.web.Models
                     comando.Connection = conexao;
                     if (model == null)
                     {
-                        comando.CommandText = "insert into tb_unidade_medida (sigla, descricao, status) values (@sigla, @descricao, @ativo); select max(id_unidade_medida) as id_unidade_medida from tb_unidade_medida";
-                        comando.Parameters.Add("@sigla", MySqlDbType.VarChar).Value = this.Sigla;
-                        comando.Parameters.Add("@descricao", MySqlDbType.VarChar).Value = this.Descricao;
+                        comando.CommandText = "insert into tb_perfil (nome, status) values (@nome, @ativo); select max(id_perfil) as id_perfil  from tb_perfil ";
+                        comando.Parameters.Add("@nome", MySqlDbType.VarChar).Value = this.Nome;
                         comando.Parameters.Add("@ativo", MySqlDbType.Bit).Value = this.Ativo ? 1 : 0;
                         ret = Convert.ToInt32(comando.ExecuteScalar());
                     }
                     else
                     {
-                        comando.CommandText = "update tb_unidade_medida set sigla=@sigla, descricao=@descricao, status=@ativo where id_unidade_medida = @id";
-                        comando.Parameters.Add("@id", MySqlDbType.VarChar).Value = this.Id;
-                        comando.Parameters.Add("@sigla", MySqlDbType.VarChar).Value = this.Sigla;
-                        comando.Parameters.Add("@descricao", MySqlDbType.VarChar).Value = this.Descricao;
+                        comando.CommandText = "update tb_perfil set nome=@nome, status=@ativo where id_perfil = @id";
+                        comando.Parameters.Add("@id", MySqlDbType.Int32).Value = this.Id;
+                        comando.Parameters.Add("@nome", MySqlDbType.VarChar).Value = this.Nome;
                         comando.Parameters.Add("@ativo", MySqlDbType.Bit).Value = this.Ativo ? 1 : 0;
                         if (comando.ExecuteNonQuery() > 0)
                         {

@@ -48,10 +48,10 @@ $(document).on('click', '#btn_incluir', function () {
     abrir_form(get_dados_inclusao());
 })
     .on('click', '.btn-alterar', function () {
-        var btn = $(this);
-        var id = btn.closest('tr').attr('data-id');
-        var url = url_alterar;
-        var param = { 'id': id };
+        var btn = $(this),
+            id = btn.closest('tr').attr('data-id'),
+            url = url_alterar,
+            param = { 'id': id };
 
         $.post(url, param, function (response) {
             if (response) {
@@ -61,11 +61,11 @@ $(document).on('click', '#btn_incluir', function () {
 
     })
     .on('click', '.btn-excluir', function () {
-        var btn = $(this);
-        var tr = btn.closest('tr');
-        var id = tr.attr('data-id');
-        var url = url_excluir;
-        var param = { 'id': id };
+        var btn = $(this),
+            tr = btn.closest('tr'),
+            id = tr.attr('data-id'),
+            url = url_excluir,
+            param = { 'id': id };
 
         bootbox.confirm({
             message: "Confirma a exclusão de " + titulo_pagina + "?",

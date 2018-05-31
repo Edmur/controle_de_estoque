@@ -2,11 +2,17 @@
 @{
     Layout = "~/Views/Shared/_Cadastro.cshtml";
     ViewBag.Title = "Produtos";
+    ViewBag.Lista = Model;
 }
 
 @section Styles {
     <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
     <link href="~/Content/Cadastro/Produto.css" rel="stylesheet" />
+    <style>
+        .dialogo > .modal-dialog {
+            width: 700px !important;
+        }
+    </style>
 }
 
 @section TituloGrid {
@@ -22,6 +28,61 @@
     <th class="cabecalho-center">Ação</th>
 }
 
+@section CamposCadastro {
+    <div class="row">
+        <div class="col-md-4">
+            @Html.Label("txt_ean", "Código EAN", new { @class = "control-label" })
+            @Html.TextBox("txt_ean", null, new { @class = "form-control" })
+        </div>
+        <div class="col-md-8">
+            @Html.Label("txt_descricao", "Descrição", new { @class = "control-label" })
+            @Html.TextBox("txt_descricao", null, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            @Html.Label("txt_preco_custo", "Preço de Custo", new { @class = "control-label" })
+            @Html.TextBox("txt_preco_custo", null, new { @class = "form-control" })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("txt_preco_venda", "Preço de Venda", new { @class = "control-label" })
+            @Html.TextBox("txt_preco_venda", null, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            @Html.Label("ddl_categoria", "Categoria", new { @class = "col-md-3 control-label" })
+            @Html.DropDownList("ddl_categoria", new SelectList(ViewBag.CategoriasProduto, "Id", "Descricao"), new { @class = "combobox input-large form-control" })
+        </div>
+        <div class="col-md-8">
+            @Html.Label("ddl_fornecedor", "Fornecedor", new { @class = "col-md-3 control-label" })
+            @Html.DropDownList("ddl_fornecedor", new SelectList(ViewBag.Fornecedores, "Id", "Nome"), new { @class = "combobox input-large form-control" })
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            @Html.Label("ddl_unidade_medida", "Unidade de Medida", new { @class = "control-label" })
+            @Html.DropDownList("ddl_unidade_medida", new SelectList(ViewBag.UnidadesMedida, "Id", "Descricao"), new { @class = "form-control" })
+        </div>
+        <div class="col-md-8">
+            @Html.Label("txt_qt_unidade", "Qt.Un.Med.", new { @class = "control-label" })
+            @Html.TextBox("txt_qt_unidade", null, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-check" style="line-height: 6em; margin-bottom: -2em">
+                @Html.CheckBox("cbx_ativo", new { @class = "form-check-input" })
+                @Html.Label("cbx_ativo", "Ativo", new { @class = "form-check-label" })
+            </div>
+        </div>
+    </div>
+}
+
 @section LinhaGrid {
     @{
         var linha = 0;
@@ -32,7 +93,7 @@
             {
                 var ativo = (item.Ativo ? "Sim" : "Não");
 
-                <tr data-id="@item.Id_Produto">
+                <tr data-id="@item.Id">
                     <td class="detalhe-left">@item.Id_Categoria</td>
                     <td class="detalhe-left">@item.Id_Fornecedor</td>
                     <td class="detalhe-center">@item.Ean</td>
@@ -56,80 +117,9 @@
     }
 }
 
-@section CamposCadastro {
-    <div class="row">
-
-        <div class="form-group">
-            @Html.Label("txt_categoria", "Categoria", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                <select class="combobox input-large form-control" name="normal">
-                    <option value="" selected="selected">Selecione a categoria</option>
-                    <option value="1">Categoria 1</option>
-                    <option value="2">Categoria 2</option>
-                    <option value="3">Categoria 3</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.Label("txt_fornecedor", "Fornecedor", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                <select class="combobox input-large form-control" name="normal">
-                    <option value="" selected="selected">Selecione o fornecedor</option>
-                    <option value="1">Fornecedor 1</option>
-                    <option value="2">Fornecedor 2</option>
-                    <option value="3">Fornecedor 3</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.Label("txt_ean", "Ean", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                @Html.TextBox("txt_ean", null, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.Label("txt_descricao", "Descrição", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                @Html.TextBox("txt_descricao", null, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.Label("txt_preco_custo", "Preço de custo", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                @Html.TextBox("txt_preco_custo", null, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.Label("txt_preco_venda", "Preço de venda", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                @Html.TextBox("txt_preco_venda", null, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.Label("txt_unidade_medida", "UM", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                @Html.TextBox("txt_unidade_medida", null, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.Label("txt_qt_unidade", "Qt.Un.", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                @Html.TextBox("txt_qt_unidade", null, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                @Html.CheckBox("cbx_ativo")
-            </div>
-        </div>
-    </div>
-}
-
 @section Scripts{
     <script src="~/Scripts/bootstrap-select.js"></script>
+    <script src="~/Scripts/jquery.mask.min.js"></script>
     <script>
         var titulo_pagina = 'Cadastro de ' + '@ViewBag.Title';
         var url_excluir = '@Url.Action("ExcluirProduto", "CadProduto")';

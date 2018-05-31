@@ -23,6 +23,9 @@ namespace ControleEstoque.web.Controllers
 
             var difQuantPaginas = (quant % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);
+            ViewBag.UnidadesMedida = UnidadeMedidaModel.RecuperarLista(1, 9999);
+            ViewBag.CategoriasProduto = CategoriaProdutoModel.RecuperarLista(1, 9999);
+            ViewBag.Fornecedores = FornecedorModel.RecuperarLista(1, 9999);
 
             return View(lista);
         }

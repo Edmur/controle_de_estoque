@@ -21,8 +21,32 @@ namespace ControleEstoque.web.Models
         public string Nome { get; set; }
         public string Email { get; set; }
         public bool Ativo { get; set; }
+        public List<PerfilModel> Perfis { get; set; }
 
-        public static List<UsuarioModel> RecuperarLista()
+        public UsuarioModel()
+        {
+            this.Perfis = new List<PerfilModel>();
+        }
+
+        public static int RecuperarQuantidadeReg()
+        {
+            var ret = 0;
+            using (var conexao = new MySqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                conexao.Open();
+                using (var comando = new MySqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = "select count(*) from tb_usuario";
+                    ret = Convert.ToInt32(comando.ExecuteScalar());
+                }
+            }
+
+            return ret;
+        }
+
+        public static List<UsuarioModel> RecuperarLista(int pagina = 0, int tamPagina = 0)
         {
             var ret = new List<UsuarioModel>();
             using (var conexao = new MySqlConnection())
@@ -31,8 +55,19 @@ namespace ControleEstoque.web.Models
                 conexao.Open();
                 using (var comando = new MySqlCommand())
                 {
+                    var pos = (pagina - 1) * tamPagina;
+
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format("select * from tb_usuario order by nome");
+                    comando.CommandText = string.Format("select " +
+                        "us.id_usuario, " +
+                        "us.usuario, " +
+                        "us.senha, " +
+                        "us.nome, " +
+                        "us.email, " +
+                        "us.status " +
+                        "from tb_usuario us " +
+                        "order by nome limit {0}, {1}",
+                        pos > 0 ? pos : 0, tamPagina);
                     MySqlDataReader dtreader = comando.ExecuteReader();
 
                     while (dtreader.Read())
@@ -41,7 +76,6 @@ namespace ControleEstoque.web.Models
                         {
                             Id = (int)dtreader["id_usuario"],
                             Login = (string)dtreader["usuario"],
-                            Senha = (string)dtreader["senha"],
                             Nome = (string)dtreader["nome"],
                             Email = (string)dtreader["email"],
                             Ativo = (bool)dtreader["status"]
@@ -51,6 +85,36 @@ namespace ControleEstoque.web.Models
             }
 
             return ret;
+        }
+
+        public void CarregarPerfis()
+        {
+            this.Perfis.Clear();
+
+            using (var conexao = new MySqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                conexao.Open();
+                using (var comando = new MySqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = "select p.* " +
+                        "from tb_perfil_usuario pu, tb_perfil p " +
+                        "where(pu.id_usuario = @id_usuario) " +
+                        "and(pu.id_perfil = p.id_perfil)";
+                    comando.Parameters.Add("id_usuario", MySqlDbType.Int32).Value = this.Id;
+                    MySqlDataReader dtreader = comando.ExecuteReader();
+
+                    while (dtreader.Read())
+                    {
+                        this.Perfis.Add(new PerfilModel
+                        {
+                            Id = (int)dtreader["id_perfil"],
+                            Nome = (string)dtreader["nome"]
+                        });
+                    }
+                }
+            }
         }
 
         public static UsuarioModel RecuperarPorId(int id)
@@ -73,7 +137,6 @@ namespace ControleEstoque.web.Models
                         {
                             Id = (int)dtreader["id_usuario"],
                             Login = (string)dtreader["usuario"],
-                            Senha = (string)dtreader["senha"],
                             Nome = (string)dtreader["nome"],
                             Email = (string)dtreader["email"],
                             Ativo = (bool)dtreader["status"]
@@ -99,7 +162,8 @@ namespace ControleEstoque.web.Models
                     comando.Connection = conexao;
                     if (model == null)
                     {
-                        comando.CommandText = "insert into tb_usuario (senha, usuario, nome, email, status) values (@senha, @login, @nome, @email, @ativo); select max(id_usuario) as id_usuario from tb_usuario ";
+                        comando.CommandText = "insert into tb_usuario (senha, usuario, nome, email, status) " +
+                            "values (@senha, @login, @nome, @email, @ativo); select max(id_usuario) as id_usuario from tb_usuario ";
                         comando.Parameters.Add("@senha", MySqlDbType.VarChar).Value = CriptoHelper.HashMD5(Senha);
                         comando.Parameters.Add("@login", MySqlDbType.VarChar).Value = this.Login;
                         comando.Parameters.Add("@nome", MySqlDbType.VarChar).Value = this.Nome;
@@ -109,9 +173,10 @@ namespace ControleEstoque.web.Models
                     }
                     else
                     {
-                        comando.CommandText = "update tb_usuario set "+
-                            (!string.IsNullOrEmpty(this.Senha) ? " senha=@senha, " : "")+
-                            "usuario=@login, nome=@nome, email=@email, status=@ativo where id_usuario = @id";
+                        comando.CommandText = "update tb_usuario set " +
+                            "usuario=@login, nome=@nome, email=@email, status=@ativo " +
+                            (!string.IsNullOrEmpty(this.Senha) ? ", senha=@senha " : "") +
+                            "where id_usuario = @id";
                         comando.Parameters.Add("@id", MySqlDbType.Int32).Value = this.Id;
                         if (!string.IsNullOrEmpty(this.Senha))
                         {
@@ -184,5 +249,40 @@ namespace ControleEstoque.web.Models
 
             return ret;
         }
+
+        public string RecuperarStringNomePerfis()
+        {
+            var ret = string.Empty;
+
+            using (var conexao = new MySqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                conexao.Open();
+                using (var comando = new MySqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = string.Format(
+                        "select " +
+                        "p.nome " +
+                        "from tb_perfil_usuario pu, tb_perfil p " +
+                        "where pu.id_usuario = @id_usuario " +
+                        "and (pu.id_perfil = p.id_perfil) " +
+                        "and (p.status = 1) ");
+
+                    comando.Parameters.Add("@id_usuario", MySqlDbType.Int32).Value = this.Id;
+
+                    MySqlDataReader dtreader = comando.ExecuteReader();
+
+                    while (dtreader.Read())
+                    {
+                        ret += (ret != string.Empty ? ";" : string.Empty) + (string)dtreader["nome"];
+                    }
+                }
+            }
+
+            return ret;
+
+        }
+
     }
 }

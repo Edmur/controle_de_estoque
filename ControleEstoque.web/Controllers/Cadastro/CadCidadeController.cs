@@ -1,13 +1,13 @@
-﻿using System;
+﻿using ControleEstoque.web.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using ControleEstoque.web.Models;
 
-namespace ControleEstoque.web.Controllers
+namespace ControleEstoque.web.Controllers.Cadastro
 {
-    public class CadUnidadeMedidaController : Controller
+    public class CadCidadeController : Controller
     {
         private const int _quantMaxLinhaPorPagina = 7;
 
@@ -18,8 +18,8 @@ namespace ControleEstoque.web.Controllers
             ViewBag.QuantMaxLinhaPorPagina = _quantMaxLinhaPorPagina;
             ViewBag.PaginaAtual = 1;
 
-            var lista = UnidadeMedidaModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhaPorPagina);
-            var quant = UnidadeMedidaModel.RecuperarQuantidadeReg();
+            var lista = CidadeModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhaPorPagina);
+            var quant = CidadeModel.RecuperarQuantidadeReg();
 
             var difQuantPaginas = (quant % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);
@@ -29,9 +29,9 @@ namespace ControleEstoque.web.Controllers
 
         [HttpPost]
         [Authorize]
-        public JsonResult UnidadeMedidaPagina(int pagina, int tamPag)
+        public JsonResult CidadePagina(int pagina, int tamPag)
         {
-            var lista = UnidadeMedidaModel.RecuperarLista(pagina, tamPag);
+            var lista = CidadeModel.RecuperarLista(pagina, tamPag);
 
             var difQuantPaginas = (lista.Count % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (lista.Count / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);
@@ -41,14 +41,14 @@ namespace ControleEstoque.web.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult RecuperarUnidadeMedida(int id)
+        public ActionResult RecuperarCidade(int id)
         {
-            return Json(UnidadeMedidaModel.RecuperarPorId(id));
+            return Json(CidadeModel.RecuperarPorId(id));
         }
 
         [HttpPost]
         [Authorize]
-        public ActionResult SalvarUnidadeMedida(UnidadeMedidaModel model)
+        public ActionResult SalvarCidade(CidadeModel model)
         {
             var resultado = "OK";
             var mensagens = new List<string>();
@@ -63,7 +63,7 @@ namespace ControleEstoque.web.Controllers
             {
                 try
                 {
-                    var id = model.SalvarUnidadeMedida();
+                    var id = model.SalvarCidade();
                     if (id > 0)
                     {
                         idSalvo = id.ToString();
@@ -85,10 +85,9 @@ namespace ControleEstoque.web.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult ExcluirUnidadeMedida(int id)
+        public ActionResult ExcluirCidade(int id)
         {
-            return Json(UnidadeMedidaModel.ExcluirPorId(id));
+            return Json(CidadeModel.ExcluirPorId(id));
         }
-
     }
 }

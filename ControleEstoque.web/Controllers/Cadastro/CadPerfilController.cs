@@ -1,25 +1,25 @@
-﻿using System;
+﻿using ControleEstoque.web.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using ControleEstoque.web.Models;
 
 namespace ControleEstoque.web.Controllers
 {
-    public class CadUnidadeMedidaController : Controller
+    [Authorize(Roles = "Gerente")]
+    public class CadPerfilController : Controller
     {
         private const int _quantMaxLinhaPorPagina = 7;
 
-        [Authorize]
         public ActionResult Index()
         {
             ViewBag.ListaTamPag = new SelectList(new int[] { _quantMaxLinhaPorPagina, 14, 21, 28 }, _quantMaxLinhaPorPagina);
             ViewBag.QuantMaxLinhaPorPagina = _quantMaxLinhaPorPagina;
             ViewBag.PaginaAtual = 1;
 
-            var lista = UnidadeMedidaModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhaPorPagina);
-            var quant = UnidadeMedidaModel.RecuperarQuantidadeReg();
+            var lista = PerfilModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhaPorPagina);
+            var quant = PerfilModel.RecuperarQuantidadeReg();
 
             var difQuantPaginas = (quant % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);
@@ -28,10 +28,9 @@ namespace ControleEstoque.web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
-        public JsonResult UnidadeMedidaPagina(int pagina, int tamPag)
+        public JsonResult PerfilPagina(int pagina, int tamPag)
         {
-            var lista = UnidadeMedidaModel.RecuperarLista(pagina, tamPag);
+            var lista = PerfilModel.RecuperarLista(pagina, tamPag);
 
             var difQuantPaginas = (lista.Count % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (lista.Count / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);
@@ -40,15 +39,13 @@ namespace ControleEstoque.web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
-        public ActionResult RecuperarUnidadeMedida(int id)
+        public ActionResult RecuperarPerfil(int id)
         {
-            return Json(UnidadeMedidaModel.RecuperarPorId(id));
+            return Json(PerfilModel.RecuperarPorId(id));
         }
 
         [HttpPost]
-        [Authorize]
-        public ActionResult SalvarUnidadeMedida(UnidadeMedidaModel model)
+        public ActionResult SalvarPerfil(PerfilModel model)
         {
             var resultado = "OK";
             var mensagens = new List<string>();
@@ -63,7 +60,7 @@ namespace ControleEstoque.web.Controllers
             {
                 try
                 {
-                    var id = model.SalvarUnidadeMedida();
+                    var id = model.SalvarPerfil();
                     if (id > 0)
                     {
                         idSalvo = id.ToString();
@@ -84,11 +81,9 @@ namespace ControleEstoque.web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
-        public ActionResult ExcluirUnidadeMedida(int id)
+        public ActionResult ExcluirPerfil(int id)
         {
-            return Json(UnidadeMedidaModel.ExcluirPorId(id));
+            return Json(PerfilModel.ExcluirPorId(id));
         }
-
     }
 }

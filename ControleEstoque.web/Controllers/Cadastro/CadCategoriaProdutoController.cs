@@ -7,11 +7,11 @@ using ControleEstoque.web.Models;
 
 namespace ControleEstoque.web.Controllers
 {
+    [Authorize(Roles = "Gerente,Administratito,Operador")]
     public class CadCategoriaProdutoController : Controller
     {
         private const int _quantMaxLinhaPorPagina = 7;
 
-        [Authorize]
         public ActionResult Index()
         {
             ViewBag.ListaTamPag = new SelectList(new int[] { _quantMaxLinhaPorPagina, 14, 21, 28 }, _quantMaxLinhaPorPagina);
@@ -28,7 +28,6 @@ namespace ControleEstoque.web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public JsonResult CategoriaProdutoPagina(int pagina, int tamPag)
         {
             var lista = CategoriaProdutoModel.RecuperarLista(pagina, tamPag);
@@ -40,14 +39,12 @@ namespace ControleEstoque.web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public ActionResult RecuperarCategoriaProduto(int id)
         {
             return Json(CategoriaProdutoModel.RecuperarPorId(id));
         }
 
         [HttpPost]
-        [Authorize]
         public ActionResult SalvarCategoriaProduto(CategoriaProdutoModel model)
         {
             var resultado = "OK";
@@ -84,7 +81,7 @@ namespace ControleEstoque.web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Gerente,Administratito")]
         public ActionResult ExcluirCategoriaProduto(int id)
         {
             return Json(CategoriaProdutoModel.ExcluirPorId(id));
