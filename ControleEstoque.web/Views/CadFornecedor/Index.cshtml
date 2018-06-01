@@ -2,6 +2,7 @@
 @{
     Layout = "~/Views/Shared/_Cadastro.cshtml";
     ViewBag.Title = "Fornecedores";
+    ViewBag.Lista = Model;
 }
 
 @section Styles {
@@ -145,6 +146,7 @@
         var url_alterar = '@Url.Action("RecuperarFornecedor", "CadFornecedor")';
         var url_confirmar = '@Url.Action("SalvarFornecedor", "CadFornecedor")';
         var url_pagina = '@Url.Action("FornecedorPagina", "CadFornecedor")';
+        var url_filtro_change = '@Url.Action("FornecedorPagina", "CadFornecedor")';
     </script>
     <script src="~/Scripts/Cadastro/CadFornecedor.js"></script>
 }

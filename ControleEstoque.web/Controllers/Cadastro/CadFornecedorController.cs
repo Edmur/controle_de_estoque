@@ -7,11 +7,11 @@ using ControleEstoque.web.Models;
 
 namespace ControleEstoque.web.Controllers
 {
+    [Authorize(Roles = "Gerente,Administratito,Operador")]
     public class CadFornecedorController : Controller
     {
         private const int _quantMaxLinhaPorPagina = 7;
 
-        [Authorize]
         public ActionResult Index()
         {
             ViewBag.ListaTamPag = new SelectList(new int[] { _quantMaxLinhaPorPagina, 14, 21, 28 }, _quantMaxLinhaPorPagina);
@@ -28,10 +28,9 @@ namespace ControleEstoque.web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
-        public JsonResult FornecedorPagina(int pagina, int tamPag)
+        public JsonResult FornecedorPagina(int pagina, int tamPag, string filtro)
         {
-            var lista = FornecedorModel.RecuperarLista(pagina, tamPag);
+            var lista = FornecedorModel.RecuperarLista(pagina, tamPag, filtro);
 
             var difQuantPaginas = (lista.Count % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (lista.Count / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);
@@ -40,14 +39,12 @@ namespace ControleEstoque.web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public JsonResult RecuperarFornecedor(int id)
         {
             return Json(FornecedorModel.RecuperarPorId(id));
         }
 
         [HttpPost]
-        [Authorize]
         public JsonResult SalvarFornecedor(FornecedorModel model)
         {
             var resultado = "OK";
@@ -84,7 +81,7 @@ namespace ControleEstoque.web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Gerente,Administratito")]
         public JsonResult ExcluirFornecedor(int id)
         {
             return Json(FornecedorModel.ExcluirPorId(id));

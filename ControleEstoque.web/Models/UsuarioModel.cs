@@ -46,7 +46,7 @@ namespace ControleEstoque.web.Models
             return ret;
         }
 
-        public static List<UsuarioModel> RecuperarLista(int pagina = 0, int tamPagina = 0)
+        public static List<UsuarioModel> RecuperarLista(int pagina = 0, int tamPagina = 0, string filtro = "")
         {
             var ret = new List<UsuarioModel>();
             using (var conexao = new MySqlConnection())
@@ -56,6 +56,11 @@ namespace ControleEstoque.web.Models
                 using (var comando = new MySqlCommand())
                 {
                     var pos = (pagina - 1) * tamPagina;
+                    var filtroWhere = "";
+                    if (!string.IsNullOrEmpty(filtro))
+                    {
+                        filtroWhere = string.Format(" where lower(us.nome) like '%{0}%' ", filtro.ToLower());
+                    }
 
                     comando.Connection = conexao;
                     comando.CommandText = string.Format("select " +
@@ -66,6 +71,7 @@ namespace ControleEstoque.web.Models
                         "us.email, " +
                         "us.status " +
                         "from tb_usuario us " +
+                        filtroWhere +
                         "order by nome limit {0}, {1}",
                         pos > 0 ? pos : 0, tamPagina);
                     MySqlDataReader dtreader = comando.ExecuteReader();
@@ -157,40 +163,77 @@ namespace ControleEstoque.web.Models
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
-                using (var comando = new MySqlCommand())
+
+                using (var transacao = conexao.BeginTransaction())
                 {
-                    comando.Connection = conexao;
-                    if (model == null)
+                    using (var comando = new MySqlCommand())
                     {
-                        comando.CommandText = "insert into tb_usuario (senha, usuario, nome, email, status) " +
-                            "values (@senha, @login, @nome, @email, @ativo); select max(id_usuario) as id_usuario from tb_usuario ";
-                        comando.Parameters.Add("@senha", MySqlDbType.VarChar).Value = CriptoHelper.HashMD5(Senha);
-                        comando.Parameters.Add("@login", MySqlDbType.VarChar).Value = this.Login;
-                        comando.Parameters.Add("@nome", MySqlDbType.VarChar).Value = this.Nome;
-                        comando.Parameters.Add("@email", MySqlDbType.VarChar).Value = this.Email;
-                        comando.Parameters.Add("@ativo", MySqlDbType.Bit).Value = this.Ativo ? 1 : 0;
-                        ret = Convert.ToInt32(comando.ExecuteScalar());
-                    }
-                    else
-                    {
-                        comando.CommandText = "update tb_usuario set " +
-                            "usuario=@login, nome=@nome, email=@email, status=@ativo " +
-                            (!string.IsNullOrEmpty(this.Senha) ? ", senha=@senha " : "") +
-                            "where id_usuario = @id";
-                        comando.Parameters.Add("@id", MySqlDbType.Int32).Value = this.Id;
-                        if (!string.IsNullOrEmpty(this.Senha))
+                        comando.Connection = conexao;
+                        comando.Transaction = transacao;
+
+                        if (model == null)
                         {
+                            comando.CommandText = "insert into tb_usuario (senha, usuario, nome, email, status) " +
+                                "values (@senha, @login, @nome, @email, @ativo); select max(id_usuario) as id_usuario from tb_usuario ";
                             comando.Parameters.Add("@senha", MySqlDbType.VarChar).Value = CriptoHelper.HashMD5(Senha);
+                            comando.Parameters.Add("@login", MySqlDbType.VarChar).Value = this.Login;
+                            comando.Parameters.Add("@nome", MySqlDbType.VarChar).Value = this.Nome;
+                            comando.Parameters.Add("@email", MySqlDbType.VarChar).Value = this.Email;
+                            comando.Parameters.Add("@ativo", MySqlDbType.Bit).Value = this.Ativo ? 1 : 0;
+                            ret = Convert.ToInt32(comando.ExecuteScalar());
                         }
-                        comando.Parameters.Add("@login", MySqlDbType.VarChar).Value = this.Login;
-                        comando.Parameters.Add("@nome", MySqlDbType.VarChar).Value = this.Nome;
-                        comando.Parameters.Add("@email", MySqlDbType.VarChar).Value = this.Email;
-                        comando.Parameters.Add("@ativo", MySqlDbType.Bit).Value = this.Ativo ? 1 : 0;
-                        if (comando.ExecuteNonQuery() > 0)
+                        else
                         {
-                            ret = this.Id;
+                            comando.CommandText = "update tb_usuario set " +
+                                "usuario=@login, nome=@nome, email=@email, status=@ativo " +
+                                (!string.IsNullOrEmpty(this.Senha) ? ", senha=@senha " : "") +
+                                "where id_usuario = @id";
+                            comando.Parameters.Add("@id", MySqlDbType.Int32).Value = this.Id;
+                            if (!string.IsNullOrEmpty(this.Senha))
+                            {
+                                comando.Parameters.Add("@senha", MySqlDbType.VarChar).Value = CriptoHelper.HashMD5(Senha);
+                            }
+                            comando.Parameters.Add("@login", MySqlDbType.VarChar).Value = this.Login;
+                            comando.Parameters.Add("@nome", MySqlDbType.VarChar).Value = this.Nome;
+                            comando.Parameters.Add("@email", MySqlDbType.VarChar).Value = this.Email;
+                            comando.Parameters.Add("@ativo", MySqlDbType.Bit).Value = this.Ativo ? 1 : 0;
+                            if (comando.ExecuteNonQuery() > 0)
+                            {
+                                ret = this.Id;
+                            }
                         }
                     }
+
+                    if (this.Perfis != null && this.Perfis.Count > 0)
+                    {
+                        using (var comandoExclusaoPerfilUsuario = new MySqlCommand())
+                        {
+                            comandoExclusaoPerfilUsuario.Connection = conexao;
+                            comandoExclusaoPerfilUsuario.Transaction = transacao;
+                            comandoExclusaoPerfilUsuario.CommandText = "delete from tb_perfil_usuario where (id_usuario=@id_usuario)";
+                            comandoExclusaoPerfilUsuario.Parameters.Add("@id_usuario", MySqlDbType.Int32).Value = this.Id;
+                            comandoExclusaoPerfilUsuario.ExecuteScalar();
+                        }
+
+                        if (this.Perfis[0].Id != -1)
+                        {
+                            foreach (var perfil in this.Perfis)
+                            {
+                                using (var comandoInclusaoPerfilUsuario = new MySqlCommand())
+                                {
+                                    comandoInclusaoPerfilUsuario.Connection = conexao;
+                                    comandoInclusaoPerfilUsuario.Transaction = transacao;
+                                    comandoInclusaoPerfilUsuario.CommandText = "insert into tb_perfil_usuario (id_perfil, id_usuario) values (@id_perfil, @id_usuario)";
+                                    comandoInclusaoPerfilUsuario.Parameters.Add("@id_perfil", MySqlDbType.Int32).Value = perfil.Id;
+                                    comandoInclusaoPerfilUsuario.Parameters.Add("@id_usuario", MySqlDbType.Int32).Value = (this.Id == 0 ? ret : this.Id);
+                                    comandoInclusaoPerfilUsuario.ExecuteScalar();
+                                }
+                            }
+                        }
+                    }
+
+                    transacao.Commit();
+
                 }
             }
             return ret;

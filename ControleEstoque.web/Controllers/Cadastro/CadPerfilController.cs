@@ -28,9 +28,9 @@ namespace ControleEstoque.web.Controllers
         }
 
         [HttpPost]
-        public JsonResult PerfilPagina(int pagina, int tamPag)
+        public JsonResult PerfilPagina(int pagina, int tamPag, string filtro)
         {
-            var lista = PerfilModel.RecuperarLista(pagina, tamPag);
+            var lista = PerfilModel.RecuperarLista(pagina, tamPag, filtro);
 
             var difQuantPaginas = (lista.Count % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (lista.Count / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);

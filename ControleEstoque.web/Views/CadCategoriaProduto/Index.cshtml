@@ -2,6 +2,7 @@
 @{
     Layout = "~/Views/Shared/_Cadastro.cshtml";
     ViewBag.Title = "Categoria de Produtos";
+    ViewBag.Lista = Model;
 }
 
 @section Styles {
@@ -67,6 +68,7 @@
         var url_alterar = '@Url.Action("RecuperarCategoriaProduto", "CadCategoriaProduto")';
         var url_confirmar = '@Url.Action("SalvarCategoriaProduto", "CadCategoriaProduto")';
         var url_pagina = '@Url.Action("CategoriaProdutoPagina", "CadCategoriaProduto")';
+        var url_filtro_change = '@Url.Action("CategoriaProdutoPagina", "CadCategoriaProduto")';
     </script>
     <script src="~/Scripts/Cadastro/CadCategoriaProduto.js"></script>
 }

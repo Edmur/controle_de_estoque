@@ -34,19 +34,28 @@ namespace ControleEstoque.web.Models
             return ret;
         }
 
-        public static List<CategoriaProdutoModel> RecuperarLista(int pagina, int tamPagina)
+        public static List<CategoriaProdutoModel> RecuperarLista(int pagina, int tamPagina, string filtro = "")
         {
             var ret = new List<CategoriaProdutoModel>();
             using (var conexao = new MySqlConnection())
             {
                 var pos = (pagina - 1) * tamPagina;
+                var filtroWhere = "";
+                if (!string.IsNullOrEmpty(filtro))
+                {
+                    filtroWhere = string.Format(" where lower(descricao) like '%{0}%' ", filtro.ToLower());
+                }
 
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
                 using (var comando = new MySqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format("select * from tb_categoria order by descricao limit {0}, {1}",
+                    comando.CommandText = string.Format("select * " +
+                        "from tb_categoria " +
+                        filtroWhere +
+                        "order by descricao " +
+                        "limit {0}, {1}",
                         pos > 0 ? pos : 0, tamPagina);
                     MySqlDataReader dtreader = comando.ExecuteReader();
 

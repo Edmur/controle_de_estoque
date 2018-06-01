@@ -93,3 +93,14 @@ textarea {
 body.modal-open, .modal-open .navbar-fixed-top, .modal-open .navbar-fixed-bottom {
     margin-right: 0px;
 }
+
+#mensagem-grid {
+    height: 100px;
+    text-align: center;
+    border: 1px solid #dddddd;
+    line-height: 100px;
+}
+
+#txt_filtro {
+    float: right;
+}

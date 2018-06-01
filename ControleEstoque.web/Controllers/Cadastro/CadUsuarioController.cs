@@ -31,9 +31,9 @@ namespace ControleEstoque.web.Controllers
         }
 
         [HttpPost]
-        public JsonResult UsuarioPagina(int pagina, int tamPag)
+        public JsonResult UsuarioPagina(int pagina, int tamPag, string filtro)
         {
-            var lista = UsuarioModel.RecuperarLista(pagina, tamPag);
+            var lista = UsuarioModel.RecuperarLista(pagina, tamPag, filtro);
 
             var difQuantPaginas = (lista.Count % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (lista.Count / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);
@@ -51,7 +51,7 @@ namespace ControleEstoque.web.Controllers
         }
 
         [HttpPost]
-        public ActionResult SalvarUsuario(UsuarioModel model)
+        public ActionResult SalvarUsuario(UsuarioModel model, List<int> idPerfis)
         {
             var resultado = "OK";
             var mensagens = new List<string>();
@@ -64,6 +64,20 @@ namespace ControleEstoque.web.Controllers
             }
             else
             {
+
+                model.Perfis = new List<PerfilModel>();
+                if (idPerfis == null || idPerfis.Count == 0)
+                {
+                    model.Perfis.Add(new PerfilModel() { Id = -1 });
+                }
+                else
+                {
+                    foreach (var id in idPerfis)
+                    {
+                        model.Perfis.Add(new PerfilModel() { Id = id });
+                    }
+                }
+
                 try
                 {
                     if (model.Senha == _senhaPadrao)

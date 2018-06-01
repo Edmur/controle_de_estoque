@@ -34,12 +34,17 @@ namespace ControleEstoque.web.Models
             return ret;
         }
 
-        public static List<PerfilModel> RecuperarLista(int pagina = -1, int tamPagina = -1)
+        public static List<PerfilModel> RecuperarLista(int pagina = -1, int tamPagina = -1, string filtro = "")
         {
             var ret = new List<PerfilModel>();
             using (var conexao = new MySqlConnection())
             {
                 var pos = (pagina - 1) * tamPagina;
+                var filtroWhere = "";
+                if (!string.IsNullOrEmpty(filtro))
+                {
+                    filtroWhere = string.Format(" where lower(nome) like '%{0}%' ", filtro.ToLower());
+                }
 
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
@@ -53,7 +58,12 @@ namespace ControleEstoque.web.Models
                     }
                     else
                     {
-                        comando.CommandText = string.Format("select * from tb_perfil order by nome limit {0}, {1}",
+                        comando.CommandText = string.Format(
+                            "select * " +
+                            "from tb_perfil " +
+                            filtroWhere +
+                            "order by nome " +
+                            "limit {0}, {1}",
                             pos > 0 ? pos : 0, tamPagina);
                     }
 

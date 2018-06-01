@@ -7,11 +7,11 @@ using System.Web.Mvc;
 
 namespace ControleEstoque.web.Controllers.Cadastro
 {
+    [Authorize(Roles = "Gerente,Administratito,Operador")]
     public class CadCidadeController : Controller
     {
         private const int _quantMaxLinhaPorPagina = 7;
 
-        [Authorize]
         public ActionResult Index()
         {
             ViewBag.ListaTamPag = new SelectList(new int[] { _quantMaxLinhaPorPagina, 14, 21, 28 }, _quantMaxLinhaPorPagina);
@@ -28,10 +28,9 @@ namespace ControleEstoque.web.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
-        public JsonResult CidadePagina(int pagina, int tamPag)
+        public JsonResult CidadePagina(int pagina, int tamPag, string filtro)
         {
-            var lista = CidadeModel.RecuperarLista(pagina, tamPag);
+            var lista = CidadeModel.RecuperarLista(pagina, tamPag, filtro);
 
             var difQuantPaginas = (lista.Count % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (lista.Count / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);
@@ -40,14 +39,12 @@ namespace ControleEstoque.web.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         public ActionResult RecuperarCidade(int id)
         {
             return Json(CidadeModel.RecuperarPorId(id));
         }
 
         [HttpPost]
-        [Authorize]
         public ActionResult SalvarCidade(CidadeModel model)
         {
             var resultado = "OK";
@@ -84,7 +81,7 @@ namespace ControleEstoque.web.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Gerente,Administratito")]
         public ActionResult ExcluirCidade(int id)
         {
             return Json(CidadeModel.ExcluirPorId(id));

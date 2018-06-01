@@ -28,9 +28,9 @@ namespace ControleEstoque.web.Controllers
         }
 
         [HttpPost]
-        public JsonResult CategoriaProdutoPagina(int pagina, int tamPag)
+        public JsonResult CategoriaProdutoPagina(int pagina, int tamPag, string filtro)
         {
-            var lista = CategoriaProdutoModel.RecuperarLista(pagina, tamPag);
+            var lista = CategoriaProdutoModel.RecuperarLista(pagina, tamPag, filtro);
 
             var difQuantPaginas = (lista.Count % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (lista.Count / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);

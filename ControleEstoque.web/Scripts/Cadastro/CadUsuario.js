@@ -49,7 +49,8 @@ function get_dados_form() {
         Senha: $('#txt_senha').val(),
         Nome: $('#txt_nome').val(),
         Email: $('#txt_email').val(),
-        Ativo: $('#cbx_ativo').prop('checked')
+        Ativo: $('#cbx_ativo').prop('checked'),
+        idPerfis: get_lista_perfis_marcados()
     };
 }
 
@@ -59,4 +60,20 @@ function preencher_linha_grid(param, linha) {
         .eq(1).html(param.Nome).end()
         .eq(2).html(param.Email).end()
         .eq(3).html(param.Ativo ? 'Sim' : 'Não');
+}
+
+function get_lista_perfis_marcados() {
+    var ids = [],
+        lista_perfil = $('#lista_perfil');
+
+    lista_perfil.find('input[type=checkbox]').each(function (index, input) {
+        var cbx = $(input),
+            marcado = cbx.is(':checked');
+
+        if (marcado) {
+            ids.push(parseInt(cbx.attr('data-id-perfil')));
+        }
+    });
+
+    return ids;
 }

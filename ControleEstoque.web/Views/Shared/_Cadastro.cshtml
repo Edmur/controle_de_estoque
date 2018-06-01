@@ -1,5 +1,10 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var lista = ViewBag.Lista;
+    var titulo = ViewBag.Title;
+
+    ViewBag.Title = "Cadastro de " + ViewBag.Title;
 }
 
 @RenderSection("Styles", true)
@@ -7,18 +12,27 @@
 
 <div id="cadastro">
     <section id="cadastro_cabecalho">
-        <h1 class="cabecalho-center">Cadastro de @ViewBag.Title</h1>
+        <h1 class="cabecalho-center">@ViewBag.Title</h1>
     </section>
     <section id="cadastro_conteudo">
         <div id="cabecalho_grid" class="row">
             <div class="col-md-12">
-                <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i>Incluir</a>
-                @Html.DropDownList("ddl_tam_pag", (SelectList)ViewBag.ListaTamPag, new { @class = "selectpicker" })
+                <div class="row">
+                    <div class="col-md-2">
+                        <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i>Incluir</a>
+                    </div>
+                    <div class="col-md-6">
+                        @Html.DropDownList("ddl_tam_pag", (SelectList)ViewBag.ListaTamPag, new { @class = "selectpicker" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.TextBox("txt_filtro", null, new { @class = "form-control" })
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <table id="grid_cadastro" class="table table-bordered table-striped table-hover">
+                <table id="grid_cadastro" class="table table-bordered table-striped table-hover @Html.Raw(lista == null || lista.Count == 0 ? "invisivel" : "")">
                     <thead>
                         <tr>
                             @RenderSection("TituloGrid", true)
@@ -28,6 +42,9 @@
                         @RenderSection("LinhaGrid", true)
                     </tbody>
                 </table>
+                <div id="mensagem-grid" @Html.Raw(lista != null && lista.Count > 0 ? "class=\"invisivel\"" : "")">
+                    Nenhum registro em @titulo
+                </div>
             </div>
         </div>
         @if (ViewBag.QuantPaginas > 1)
