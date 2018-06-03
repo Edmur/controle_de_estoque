@@ -13,6 +13,7 @@ namespace ControleEstoque.web.Models
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "Descrição deve ser informada.")]
+        [MaxLength(30, ErrorMessage = "Descrição deve ter no máximo 30 caracteres.")]
         public string Descricao { get; set; }
         public bool Ativo { get; set; }
 

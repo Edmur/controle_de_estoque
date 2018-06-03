@@ -15,18 +15,6 @@ function set_focus_form() {
     $('#txt_ean').focus();
 }
 
-function set_dados_grid(dados) {
-    return '<td class="detalhe-left">' + dados.Id_Categoria + '</td>' +
-        '<td class="detalhe-left">' + dados.Id_Fornecedor + '</td>' +
-        '<td class="detalhe-center">' + dados.Ean + '</td>' +
-        '<td class="detalhe-left">' + dados.Descricao + '</td>' +
-        '<td class="detalhe-right">' + dados.PrecoCusto + '</td>' +
-        '<td class="detalhe-right">' + dados.PrecoVenda + '</td>' +
-        '<td class="detalhe-center">' + dados.Id_UnidadeMedida + '</td>' +
-        '<td class="detalhe-right">' + dados.Qt_UnidadeMedida + '</td>' +
-        '<td class="detalhe-center">' + (dados.Ativo ? 'Sim' : 'Não') + '</td>';
-}
-
 function get_dados_inclusao() {
     return {
         Id: 0,
@@ -59,19 +47,20 @@ function get_dados_form() {
 
 function preencher_linha_grid(param, linha) {
     linha
-        .eq(0).html(param.Id_Categoria).end()
-        .eq(1).html(param.Id_Fornecedor).end()
-        .eq(2).html(param.Ean).end()
-        .eq(3).html(param.Descricao).end()
-        .eq(4).html(param.PrecoCusto).end()
-        .eq(5).html(param.PrecoVenda).end()
-        .eq(6).html(param.Id_UnidadeMedida).end()
-        .eq(7).html(param.Qt_UnidadeMedida).end()
-        .eq(8).html(param.Ativo ? 'Sim' : 'Não');
+        .eq(0).html(param.Ean).end()
+        .eq(1).html(param.Descricao).end()
+        .eq(2).html(param.PrecoCusto).end()
+        .eq(3).html(param.PrecoVenda).end()
+        .eq(4).html(param.Ativo ? 'Sim' : 'Não');
 }
 
 $(document)
     .ready(function () {
         $('#txt_preco_custo,#txt_preco_venda').mask('#.##0,00', { reverse: true });
         $('#txt_qt_unidade').mask('00000');
+
+        var grid = $('#grid_cadastro > tbody');
+        for (var i = 0; i < linhas.length; i++) {
+            grid.append(criar_linha_grid(linhas[i]));
+        }
     });

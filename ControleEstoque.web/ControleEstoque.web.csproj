@@ -178,6 +178,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\CadastroController.cs" />
     <Compile Include="Controllers\Cadastro\CadCidadeController.cs" />
+    <Compile Include="Controllers\Cadastro\CadEstadoController.cs" />
+    <Compile Include="Controllers\Cadastro\CadPaisController.cs" />
     <Compile Include="Controllers\Cadastro\CadUnidadeMedidaController.cs" />
     <Compile Include="Controllers\Cadastro\CadProdutoController.cs" />
     <Compile Include="Controllers\Cadastro\CadFornecedorController.cs" />
@@ -195,8 +197,10 @@
     <Compile Include="Helpers\CriptoHelper.cs" />
     <Compile Include="Models\CategoriaProdutoModel.cs" />
     <Compile Include="Models\CidadeModel.cs" />
+    <Compile Include="Models\EstadoModel.cs" />
     <Compile Include="Models\FornecedorModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\PaisModel.cs" />
     <Compile Include="Models\PerfilModel.cs" />
     <Compile Include="Models\ProdutoModel.cs" />
     <Compile Include="Models\UnidadeMedidaModel.cs" />
@@ -210,6 +214,8 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Cadastro\Estado.css" />
+    <Content Include="Content\Cadastro\Pais.css" />
     <Content Include="Content\Cadastro\Perfil.css" />
     <Content Include="Content\Cadastro\Cidade.css" />
     <Content Include="Content\Cadastro\CategoriaProduto.css" />
@@ -231,6 +237,8 @@
     </Content>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\Cadastro\CadEstado.js" />
+    <Content Include="Scripts\Cadastro\CadPais.js" />
     <Content Include="Scripts\Cadastro\CadPerfil.js" />
     <Content Include="Scripts\Cadastro\CadCidade.js" />
     <Content Include="Scripts\Cadastro\CadCategoriaProduto.js" />
@@ -252,6 +260,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Content\sweetalert2.min.css" />
+    <Content Include="Scripts\mustache.js" />
+    <Content Include="Scripts\mustache.min.js" />
     <Content Include="Scripts\sweetalert2.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -271,8 +281,6 @@
     <Content Include="Views\CadCategoriaProduto\Index.cshtml" />
     <Content Include="Views\CadUnidadeMedida\Index.cshtml" />
     <Content Include="Views\CadProduto\Index.cshtml" />
-    <Content Include="Views\Cadastro\Pais.cshtml" />
-    <Content Include="Views\Cadastro\Estado.cshtml" />
     <Content Include="Views\CadCidade\Index.cshtml" />
     <Content Include="Views\CadFornecedor\Index.cshtml" />
     <Content Include="Views\CadUsuario\Index.cshtml" />
@@ -287,6 +295,8 @@
     <Content Include="Views\Conta\Login.cshtml" />
     <Content Include="Views\Shared\_Cadastro.cshtml" />
     <Content Include="Views\CadPerfil\Index.cshtml" />
+    <Content Include="Views\CadPais\Index.cshtml" />
+    <Content Include="Views\CadEstado\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

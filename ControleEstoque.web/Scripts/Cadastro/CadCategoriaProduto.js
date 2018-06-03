@@ -8,11 +8,6 @@ function set_focus_form() {
     $('#txt_descricao').focus();
 }
 
-function set_dados_grid(dados) {
-    return '<td class="detalhe-left">' + dados.Descricao + '</td>' +
-        '<td class="detalhe-center">' + (dados.Ativo ? 'Sim' : 'Não') + '</td>';
-}
-
 function get_dados_inclusao() {
     return {
         Id: 0,
@@ -34,3 +29,10 @@ function preencher_linha_grid(param, linha) {
         .eq(0).html(param.Descricao).end()
         .eq(1).html(param.Ativo ? 'Sim' : 'Não');
 }
+
+$(document).ready(function () {
+    var grid = $('#grid_cadastro > tbody');
+    for (var i = 0; i < linhas.length; i++) {
+        grid.append(criar_linha_grid(linhas[i]));
+    }
+});

@@ -5,18 +5,21 @@ using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace ControleEstoque.web.Models
 {
-    public class CidadeModel
+    public class EstadoModel
     {
         public int Id { get; set; }
-        [Required(ErrorMessage = "Estado deve ser informado.")]
-        public int Id_Estado { get; set; }
+        [Required(ErrorMessage = "Nome deve ser informado.")]
+        [MaxLength(30, ErrorMessage = "Nome deve ter no máximo 30 caracteres.")]
+        public string Nome { get; set; }
+        [Required(ErrorMessage = "UF deve ser informada.")]
+        [MaxLength(2, ErrorMessage = "UF deve ter no máximo 2 caracteres.")]
+        public string Uf { get; set; }
         [Required(ErrorMessage = "País deve ser informado.")]
         public int Id_Pais { get; set; }
-        [Required(ErrorMessage = "Nome deve ser informado.")]
-        public string Nome { get; set; }
         public bool Ativo { get; set; }
 
         public static int RecuperarQuantidadeReg()
@@ -29,7 +32,7 @@ namespace ControleEstoque.web.Models
                 using (var comando = new MySqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = "select count(*) from tb_cidade";
+                    comando.CommandText = "select count(*) from tb_estado";
                     ret = Convert.ToInt32(comando.ExecuteScalar());
                 }
             }
@@ -37,9 +40,9 @@ namespace ControleEstoque.web.Models
             return ret;
         }
 
-        public static List<CidadeModel> RecuperarLista(int pagina, int tamPagina, string filtro = "")
+        public static List<EstadoModel> RecuperarLista(int pagina=0, int tamPagina=0, string filtro = "", int idPais = 0 )
         {
-            var ret = new List<CidadeModel>();
+            var ret = new List<EstadoModel>();
             using (var conexao = new MySqlConnection())
             {
                 var pos = (pagina - 1) * tamPagina;
@@ -48,6 +51,11 @@ namespace ControleEstoque.web.Models
                 {
                     filtroWhere = string.Format(" where lower(nome) like '%{0}%' ", filtro.ToLower());
                 }
+                if (idPais > 0)
+                {
+                    filtroWhere += (string.IsNullOrEmpty(filtroWhere) ? " where " : " and ") + 
+                        string.Format(" id_pais = {0} ", idPais);
+                }
 
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
@@ -55,7 +63,7 @@ namespace ControleEstoque.web.Models
                 {
                     comando.Connection = conexao;
                     comando.CommandText = string.Format("select * " +
-                        "from tb_cidade " +
+                        "from tb_estado " +
                         filtroWhere +
                         "order by nome " +
                         "limit {0}, {1}",
@@ -64,11 +72,12 @@ namespace ControleEstoque.web.Models
 
                     while (dtreader.Read())
                     {
-                        ret.Add(new CidadeModel
+                        ret.Add(new EstadoModel
                         {
-                            Id = Convert.ToInt32(dtreader["id_cidade"]),
-                            Id_Estado = Convert.ToInt32(dtreader["id_estado"]),
+                            Id = Convert.ToInt32(dtreader["id_estado"]),
                             Nome = Convert.ToString(dtreader["nome"]),
+                            Uf = Convert.ToString(dtreader["Uf"]),
+                            Id_Pais = Convert.ToInt32(dtreader["id_pais"]),
                             Ativo = Convert.ToBoolean(dtreader["status"])
                         });
                     }
@@ -78,9 +87,9 @@ namespace ControleEstoque.web.Models
             return ret;
         }
 
-        public static CidadeModel RecuperarPorId(int id)
+        public static EstadoModel RecuperarPorId(int id)
         {
-            CidadeModel ret = null;
+            EstadoModel ret = null;
             using (var conexao = new MySqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
@@ -88,26 +97,18 @@ namespace ControleEstoque.web.Models
                 using (var comando = new MySqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText =
-                        "select tc.id_cidade, " +
-                        "       te.id_pais, " +
-                        "       tc.id_estado, " +
-                        "       tc.nome, " +
-                        "       tc.status " +
-                        "from tb_cidade tc, tb_estado te " +
-                        "where tc.id_estado = te.id_estado " +
-                        "and id_cidade = @id";
+                    comando.CommandText = "select * from tb_estado where id_estado = @id";
                     comando.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
                     MySqlDataReader dtreader = comando.ExecuteReader();
 
                     if (dtreader.Read())
                     {
-                        ret = new CidadeModel
+                        ret = new EstadoModel
                         {
-                            Id = Convert.ToInt32(dtreader["id_cidade"]),
-                            Id_Pais = Convert.ToInt32(dtreader["id_pais"]),
-                            Id_Estado = Convert.ToInt32(dtreader["id_estado"]),
+                            Id = Convert.ToInt32(dtreader["id_estado"]),
                             Nome = Convert.ToString(dtreader["nome"]),
+                            Uf = Convert.ToString(dtreader["Uf"]),
+                            Id_Pais = Convert.ToInt32(dtreader["id_pais"]),
                             Ativo = Convert.ToBoolean(dtreader["status"])
                         };
                     }
@@ -130,7 +131,7 @@ namespace ControleEstoque.web.Models
                     using (var comando = new MySqlCommand())
                     {
                         comando.Connection = conexao;
-                        comando.CommandText = "delete from tb_cidade where id_cidade = @id";
+                        comando.CommandText = "delete from tb_estado where id_estado = @id";
                         comando.Parameters.Add("@id", MySqlDbType.Int32).Value = id;
                         ret = (comando.ExecuteNonQuery() > 0);
                     }
@@ -139,7 +140,7 @@ namespace ControleEstoque.web.Models
             return ret;
         }
 
-        public int SalvarCidade()
+        public int SalvarEstado()
         {
             var ret = 0;
             var model = RecuperarPorId(this.Id);
@@ -153,18 +154,20 @@ namespace ControleEstoque.web.Models
                     comando.Connection = conexao;
                     if (model == null)
                     {
-                        comando.CommandText = "insert into tb_cidade (id_estado, nome, status) values (@id_estado, @nome, @ativo); select max(id_cidade) as id_cidade from tb_cidade ";
-                        comando.Parameters.Add("@id_estado", MySqlDbType.VarChar).Value = this.Id_Estado;
+                        comando.CommandText = "insert into tb_estado (nome, uf, id_pais, status) values (@nome, @uf, @id_pais, @ativo); select max(id_estado) as id_estado from tb_estado ";
                         comando.Parameters.Add("@nome", MySqlDbType.VarChar).Value = this.Nome;
+                        comando.Parameters.Add("@uf", MySqlDbType.VarChar).Value = this.Uf;
+                        comando.Parameters.Add("@id_pais", MySqlDbType.Int32).Value = this.Id_Pais;
                         comando.Parameters.Add("@ativo", MySqlDbType.Bit).Value = this.Ativo ? 1 : 0;
                         ret = Convert.ToInt32(comando.ExecuteScalar());
                     }
                     else
                     {
-                        comando.CommandText = "update tb_cidade set id_estado=@id_estado, nome=@nome, status=@ativo where id_cidade = @id";
+                        comando.CommandText = "update tb_estado set nome=@nome, uf=@uf, status=@ativo where id_estado = @id";
                         comando.Parameters.Add("@id", MySqlDbType.Int32).Value = this.Id;
-                        comando.Parameters.Add("@id_estado", MySqlDbType.VarChar).Value = this.Id_Estado;
                         comando.Parameters.Add("@nome", MySqlDbType.VarChar).Value = this.Nome;
+                        comando.Parameters.Add("@uf", MySqlDbType.VarChar).Value = this.Uf;
+                        comando.Parameters.Add("@id_pais", MySqlDbType.Int32).Value = this.Id_Pais;
                         comando.Parameters.Add("@ativo", MySqlDbType.Bit).Value = this.Ativo ? 1 : 0;
                         if (comando.ExecuteNonQuery() > 0)
                         {

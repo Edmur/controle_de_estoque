@@ -24,13 +24,6 @@ function set_focus_form() {
     $('#txt_login').focus();
 }
 
-function set_dados_grid(dados) {
-    return '<td class="detalhe-left">' + dados.Login + '</td>' +
-        '<td class="detalhe-left">' + dados.Nome + '</td>' +
-        '<td class="detalhe-left">' + dados.Email + '</td>' +
-        '<td class="detalhe-center">' + (dados.Ativo ? 'Sim' : 'Não') + '</td>';
-}
-
 function get_dados_inclusao() {
     return {
         Id: 0,
@@ -77,3 +70,11 @@ function get_lista_perfis_marcados() {
 
     return ids;
 }
+
+$(document).ready(function () {
+    var grid = $('#grid_cadastro > tbody');
+    for (var i = 0; i < linhas.length; i++) {
+        grid.append(criar_linha_grid(linhas[i]));
+    }
+});
+

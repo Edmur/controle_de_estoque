@@ -1,22 +1,30 @@
-﻿@model List<ControleEstoque.web.Models.CidadeModel>
+﻿@model List<ControleEstoque.web.Models.EstadoModel>
 @{
     Layout = "~/Views/Shared/_Cadastro.cshtml";
-    ViewBag.Title = "Cidades";
+    ViewBag.Title = "Estado";
     ViewBag.Lista = Model;
 }
 
 @section Styles {
     <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
-    <link href="~/Content/Cadastro/Cidade.css" rel="stylesheet" />
+    <link href="~/Content/Cadastro/Estado.css" rel="stylesheet" />
 }
 
 @section TituloGrid {
-    <th class="cabecalho-left">Nome</th>
+    <th class="cabecalho-center">Nome</th>
+    <th class="cabecalho-center">UF</th>
+    <th class="cabecalho-center">País</th>
     <th class="cabecalho-center">Ativo</th>
     <th class="cabecalho-center">Ação</th>
 }
 
 @section CamposCadastro {
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Label("ddl_pais", "País", new { @class = "control-label" })
+            @Html.DropDownList("ddl_pais", new SelectList(ViewBag.Paises, "Id", "Nome"), new { @class = "combobox input-large form-control" })
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12">
             @Html.Label("txt_nome", "Nome", new { @class = "control-label" })
@@ -25,14 +33,8 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            @Html.Label("ddl_pais", "País", new { @class = "control-label" })
-            @Html.DropDownList("ddl_pais", new SelectList(ViewBag.Paises, "Id", "Nome"), new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            @Html.Label("ddl_estado", "Estado", new { @class = "control-label" })
-            @Html.DropDownList("ddl_estado", new SelectList(ViewBag.Estados, "Id", "Nome"), new { @class = "form-control" })
+            @Html.Label("txt_uf", "UF", new { @class = "control-label" })
+            @Html.TextBox("txt_uf", null, new { @class = "form-control" })
         </div>
     </div>
     <div class="row">
@@ -49,12 +51,11 @@
     <script src="~/Scripts/bootstrap-select.js"></script>
     <script>
         var titulo_pagina = 'Cadastro de ' + '@ViewBag.Title';
-        var url_excluir = '@Url.Action("ExcluirCidade", "CadCidade")';
-        var url_alterar = '@Url.Action("RecuperarCidade", "CadCidade")';
-        var url_confirmar = '@Url.Action("SalvarCidade", "CadCidade")';
-        var url_pagina = '@Url.Action("CidadePagina", "CadCidade")';
-        var url_filtro_change = '@Url.Action("CidadePagina", "CadCidade")';
-        var url_listar_estados = '@Url.Action("RecuperarEstadosDoPais", "CadEstado")';
+        var url_excluir = '@Url.Action("ExcluirEstado", "CadEstado")';
+        var url_alterar = '@Url.Action("RecuperarEstado", "CadEstado")';
+        var url_confirmar = '@Url.Action("SalvarEstado", "CadEstado")';
+        var url_pagina = '@Url.Action("EstadoPagina", "CadEstado")';
+        var url_filtro_change = '@Url.Action("EstadoPagina", "CadEstado")';
         var linhas = [];
 
         @{
@@ -74,10 +75,12 @@
         }
 
     </script>
-    <script src="~/Scripts/Cadastro/CadCidade.js"></script>
+    <script src="~/Scripts/Cadastro/CadEstado.js"></script>
     <script id="template-grid" type="x-tmpl-mustache">
         <tr data-id="{{ Id }}">
             <td class="detalhe-left">{{ Nome }}</td>
+            <td class="detalhe-center">{{ Uf }}</td>
+            <td class="detalhe-center">{{ Id_Pais }}</td>
             <td class="detalhe-center">{{ #Ativo }}Sim{{ /Ativo }}{{ ^Ativo }}Não{{ /Ativo }}</td>
             <td>
                 <a class="btn-pequeno btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>

@@ -1,14 +1,14 @@
-﻿using ControleEstoque.web.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ControleEstoque.web.Models;
 
-namespace ControleEstoque.web.Controllers.Cadastro
+namespace ControleEstoque.web.Controllers
 {
     [Authorize(Roles = "Gerente,Administratito,Operador")]
-    public class CadCidadeController : Controller
+    public class CadPaisController : Controller
     {
         private const int _quantMaxLinhaPorPagina = 7;
 
@@ -18,21 +18,19 @@ namespace ControleEstoque.web.Controllers.Cadastro
             ViewBag.QuantMaxLinhaPorPagina = _quantMaxLinhaPorPagina;
             ViewBag.PaginaAtual = 1;
 
-            var lista = CidadeModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhaPorPagina);
-            var quant = CidadeModel.RecuperarQuantidadeReg();
+            var lista = PaisModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhaPorPagina);
+            var quant = PaisModel.RecuperarQuantidadeReg();
 
             var difQuantPaginas = (quant % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);
-            ViewBag.Paises = PaisModel.RecuperarLista(1, 9999);
-            ViewBag.Estados= EstadoModel.RecuperarLista(1, 9999);
 
             return View(lista);
         }
 
         [HttpPost]
-        public JsonResult CidadePagina(int pagina, int tamPag, string filtro)
+        public JsonResult PaisPagina(int pagina, int tamPag, string filtro)
         {
-            var lista = CidadeModel.RecuperarLista(pagina, tamPag, filtro);
+            var lista = PaisModel.RecuperarLista(pagina, tamPag, filtro);
 
             var difQuantPaginas = (lista.Count % ViewBag.QuantMaxLinhaPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (lista.Count / ViewBag.QuantMaxLinhaPorPagina + difQuantPaginas);
@@ -41,13 +39,13 @@ namespace ControleEstoque.web.Controllers.Cadastro
         }
 
         [HttpPost]
-        public ActionResult RecuperarCidade(int id)
+        public ActionResult RecuperarPais(int id)
         {
-            return Json(CidadeModel.RecuperarPorId(id));
+            return Json(PaisModel.RecuperarPorId(id));
         }
 
         [HttpPost]
-        public ActionResult SalvarCidade(CidadeModel model)
+        public ActionResult SalvarPais(PaisModel model)
         {
             var resultado = "OK";
             var mensagens = new List<string>();
@@ -62,7 +60,7 @@ namespace ControleEstoque.web.Controllers.Cadastro
             {
                 try
                 {
-                    var id = model.SalvarCidade();
+                    var id = model.SalvarPais();
                     if (id > 0)
                     {
                         idSalvo = id.ToString();
@@ -84,9 +82,10 @@ namespace ControleEstoque.web.Controllers.Cadastro
 
         [HttpPost]
         [Authorize(Roles = "Gerente,Administratito")]
-        public ActionResult ExcluirCidade(int id)
+        public ActionResult ExcluirPais(int id)
         {
-            return Json(CidadeModel.ExcluirPorId(id));
+            return Json(PaisModel.ExcluirPorId(id));
         }
+
     }
 }

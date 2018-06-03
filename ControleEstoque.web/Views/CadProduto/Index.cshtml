@@ -16,105 +16,67 @@
 }
 
 @section TituloGrid {
-    <th class="cabecalho-center">Categoria</th>
-    <th class="cabecalho-center">Fornecedor</th>
     <th class="cabecalho-center">Ean</th>
     <th class="cabecalho-center">Descrição</th>
     <th class="cabecalho-center">Preço de Custo</th>
     <th class="cabecalho-center">Preço de Venda</th>
-    <th class="cabecalho-center">Un.Medida</th>
-    <th class="cabecalho-center">Qt.Un.</th>
     <th class="cabecalho-center">Ativo</th>
     <th class="cabecalho-center">Ação</th>
 }
 
 @section CamposCadastro {
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             @Html.Label("txt_ean", "Código EAN", new { @class = "control-label" })
             @Html.TextBox("txt_ean", null, new { @class = "form-control" })
         </div>
-        <div class="col-md-8">
+        <div class="col-md-6">
             @Html.Label("txt_descricao", "Descrição", new { @class = "control-label" })
             @Html.TextBox("txt_descricao", null, new { @class = "form-control" })
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             @Html.Label("txt_preco_custo", "Preço de Custo", new { @class = "control-label" })
             @Html.TextBox("txt_preco_custo", null, new { @class = "form-control" })
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             @Html.Label("txt_preco_venda", "Preço de Venda", new { @class = "control-label" })
             @Html.TextBox("txt_preco_venda", null, new { @class = "form-control" })
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-4">
-            @Html.Label("ddl_categoria", "Categoria", new { @class = "col-md-3 control-label" })
-            @Html.DropDownList("ddl_categoria", new SelectList(ViewBag.CategoriasProduto, "Id", "Descricao"), new { @class = "combobox input-large form-control" })
+        <div class="col-md-6">
+            @Html.Label("ddl_categoria", "Categoria", new { @class = "control-label" })
+            @Html.DropDownList("ddl_categoria", new SelectList(ViewBag.CategoriasProduto, "Id", "Descricao"), new { @class = "form-control" })
         </div>
-        <div class="col-md-8">
-            @Html.Label("ddl_fornecedor", "Fornecedor", new { @class = "col-md-3 control-label" })
-            @Html.DropDownList("ddl_fornecedor", new SelectList(ViewBag.Fornecedores, "Id", "Nome"), new { @class = "combobox input-large form-control" })
+        <div class="col-md-6">
+            @Html.Label("ddl_fornecedor", "Fornecedor", new { @class = "control-label" })
+            @Html.DropDownList("ddl_fornecedor", new SelectList(ViewBag.Fornecedores, "Id", "Nome"), new { @class = "form-control" })
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             @Html.Label("ddl_unidade_medida", "Unidade de Medida", new { @class = "control-label" })
             @Html.DropDownList("ddl_unidade_medida", new SelectList(ViewBag.UnidadesMedida, "Id", "Descricao"), new { @class = "form-control" })
         </div>
-        <div class="col-md-8">
+        <div class="col-md-6">
             @Html.Label("txt_qt_unidade", "Qt.Un.Med.", new { @class = "control-label" })
             @Html.TextBox("txt_qt_unidade", null, new { @class = "form-control" })
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-4">
-            <div class="form-check" style="line-height: 6em; margin-bottom: -2em">
+        <div class="col-md-6">
+            <div class="form-check" style="margin-top: 1em; margin-bottom: 1em">
                 @Html.CheckBox("cbx_ativo", new { @class = "form-check-input" })
                 @Html.Label("cbx_ativo", "Ativo", new { @class = "form-check-label" })
             </div>
         </div>
     </div>
-}
-
-@section LinhaGrid {
-    @{
-        var linha = 0;
-        foreach (var item in Model)
-        {
-            linha++;
-            if (ViewBag.QuantMaxLinhaPorPagina <= 7)
-            {
-                var ativo = (item.Ativo ? "Sim" : "Não");
-
-                <tr data-id="@item.Id">
-                    <td class="detalhe-left">@item.Id_Categoria</td>
-                    <td class="detalhe-left">@item.Id_Fornecedor</td>
-                    <td class="detalhe-center">@item.Ean</td>
-                    <td class="detalhe-left">@item.Descricao</td>
-                    <td class="detalhe-right">@item.PrecoCusto</td>
-                    <td class="detalhe-right">@item.PrecoVenda</td>
-                    <td class="detalhe-center">@item.Id_UnidadeMedida</td>
-                    <td class="detalhe-right">@item.Qt_UnidadeMedida</td>
-                    <td class="detalhe-center">@ativo</td>
-                    <td>
-                        <a class="btn-pequeno btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-                        <a class="btn-pequeno btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-                    </td>
-                </tr>
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
 }
 
 @section Scripts{
@@ -126,6 +88,37 @@
         var url_alterar = '@Url.Action("RecuperarProduto", "CadProduto")';
         var url_confirmar = '@Url.Action("SalvarProduto", "CadProduto")';
         var url_pagina = '@Url.Action("ProdutoPagina", "CadProduto")';
+        var linhas = [];
+
+        @{
+            var linha = 0;
+            foreach (var item in Model)
+            {
+                linha++;
+                if (linha <= ViewBag.QuantMaxLinhaPorPagina)
+                {
+                    @:linhas.push(@Html.Raw(Json.Encode(item)));
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
     </script>
     <script src="~/Scripts/Cadastro/CadProduto.js"></script>
+    <script id="template-grid" type="x-tmpl-mustache">
+        <tr data-id="{{ Id }}">
+            <td class="detalhe-left">{{ Ean }}</td>
+            <td class="detalhe-center">{{ Descricao }}</td>
+            <td class="detalhe-center">{{ PrecoCusto }}</td>
+            <td class="detalhe-center">{{ PrecoVenda }}</td>
+            <td class="detalhe-center">{{ #Ativo }}Sim{{ /Ativo }}{{ ^Ativo }}Não{{ /Ativo }}</td>
+            <td>
+                <a class="btn-pequeno btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                <a class="btn-pequeno btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+            </td>
+        </tr>
+    </script>
 }

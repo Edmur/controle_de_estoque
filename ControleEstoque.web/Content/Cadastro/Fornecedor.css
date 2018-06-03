@@ -1,5 +1,5 @@
 ﻿#grid_cadastro > thead > tr th:nth-child(1) {
-    width: 500px;
+    width: 450px;
 }
 
 #grid_cadastro > thead > tr th:nth-child(2) {
@@ -11,15 +11,15 @@
 }
 
 #grid_cadastro > thead > tr th:nth-child(4) {
-    width: 210px;
+    width: 190px;
 }
 
 #grid_cadastro > thead > tr th:nth-child(5) {
-    width: 70px;
+    width: 60px;
 }
 
 #cadastro {
-    width: 93%;
+    width: 86%;
     margin: 0 auto;
 }
 
